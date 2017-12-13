@@ -8,15 +8,14 @@ import { wrap } from './utils/wrap';
 import * as fixtures from './test_data/fixtures';
 import { VIEW_BY_DIMENSION_INDEX, STACK_BY_DIMENSION_INDEX } from '../src/Chart/constants';
 
-import {
-    EXECUTION_REQUEST_2A_1M,
-    EXECUTION_RESPONSE_2A_1M,
-    EXECUTION_RESULT_2A_1M,
-    TABLE_HEADERS_2A_1M
-} from '../src/Table/fixtures/2attributes1measure';
-
 import '../src/styles/charts.scss';
 import '../src/styles/table.scss';
+import {
+    EXECUTION_REQUEST_POP,
+    EXECUTION_RESPONSE_POP,
+    EXECUTION_RESULT_POP,
+    TABLE_HEADERS_POP
+} from '../es/Table/fixtures/periodOverPeriod';
 
 const eventAction = decorateAction([
     (...args) => {
@@ -232,18 +231,21 @@ storiesOf('Drilldown', module)
             <div>
                 <Visualization
                     config={{ type: 'table' }}
-                    executionRequest={EXECUTION_REQUEST_2A_1M}
-                    executionResponse={EXECUTION_RESPONSE_2A_1M}
-                    executionResult={EXECUTION_RESULT_2A_1M}
+                    executionRequest={EXECUTION_REQUEST_POP}
+                    executionResponse={EXECUTION_RESPONSE_POP}
+                    executionResult={EXECUTION_RESULT_POP}
                     width={600}
                     height={400}
                     drillableItems={[
                         {
-                            uri: TABLE_HEADERS_2A_1M[2].uri,
-                            identifier: TABLE_HEADERS_2A_1M[2].localIdentifier
+                            uri: TABLE_HEADERS_POP[0].uri,
+                            identifier: TABLE_HEADERS_POP[0].localIdentifier
                         }, {
-                            uri: TABLE_HEADERS_2A_1M[0].uri,
-                            identifier: TABLE_HEADERS_2A_1M[0].localIdentifier
+                            uri: TABLE_HEADERS_POP[1].uri,
+                            identifier: TABLE_HEADERS_POP[1].localIdentifier
+                        }, {
+                            uri: TABLE_HEADERS_POP[2].uri,
+                            identifier: TABLE_HEADERS_POP[2].localIdentifier
                         }
                     ]}
                 />
