@@ -11,7 +11,7 @@ function findMeasureByIdentifier(afm, localIdentifier) {
     return (afm.measures || []).find(m => m.localIdentifier === localIdentifier);
 }
 
-function getMeasureUriOrIdentifier(afm, localIdentifier) {
+export function getMeasureUriOrIdentifier(afm, localIdentifier) {
     let measure = findMeasureByIdentifier(afm, localIdentifier);
     if (measure) {
         const popMeasureIdentifier = getPoPMeasureIdentifier(measure);
