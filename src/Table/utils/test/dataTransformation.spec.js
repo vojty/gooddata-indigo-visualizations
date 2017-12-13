@@ -22,6 +22,7 @@ import {
 } from '../../fixtures/2attributes';
 
 import {
+    EXECUTION_REQUEST_1M,
     EXECUTION_RESPONSE_1M,
     EXECUTION_RESULT_1M,
     TABLE_HEADERS_1M,
@@ -57,6 +58,7 @@ import {
 } from '../../fixtures/2attributes3measures';
 
 import {
+    EXECUTION_REQUEST_POP,
     EXECUTION_RESPONSE_POP,
     EXECUTION_RESULT_POP,
     TABLE_HEADERS_POP,
@@ -246,22 +248,33 @@ describe('Table utils - Data transformation', () => {
 
     describe('Backward compatible table headers and table rows for drilling', () => {
         it('should get backward compatible header for attribute', () => {
-            expect(getBackwardCompatibleHeaderForDrilling(TABLE_HEADERS_1A[0])).toEqual({
+            expect(getBackwardCompatibleHeaderForDrilling(EXECUTION_REQUEST_1M.afm, TABLE_HEADERS_1A[0])).toEqual({
                 type: 'attrLabel',
-                id: '1st_attr_df_local_identifier',
-                identifier: '1st_attr_df_local_identifier',
+                id: '1st_attr_df_identifier',
+                identifier: '1st_attr_df_identifier',
                 uri: '/gdc/md/project_id/obj/1st_attr_df_uri_id',
                 title: 'Product'
             });
         });
 
-        it('should get backward compatible header for measure', () => {
-            expect(getBackwardCompatibleHeaderForDrilling(TABLE_HEADERS_1M[0])).toEqual({
+        it('should get backward compatible header for simple measure', () => {
+            expect(getBackwardCompatibleHeaderForDrilling(EXECUTION_REQUEST_1M.afm, TABLE_HEADERS_1M[0])).toEqual({
                 type: 'metric',
                 id: '1st_measure_local_identifier',
                 identifier: '',
                 uri: '/gdc/md/project_id/obj/1st_measure_uri_id',
                 title: 'Lost',
+                format: '$#,##0.00'
+            });
+        });
+
+        it('should get backward compatible header for ad hoc measure', () => {
+            expect(getBackwardCompatibleHeaderForDrilling(EXECUTION_REQUEST_POP.afm, TABLE_HEADERS_POP[1])).toEqual({
+                type: 'metric',
+                id: 'pop_measure_local_identifier',
+                identifier: '',
+                uri: '/gdc/md/project_id/obj/measure_uri_id',
+                title: 'Close [BOP] - Previous year',
                 format: '$#,##0.00'
             });
         });

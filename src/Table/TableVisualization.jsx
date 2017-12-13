@@ -533,7 +533,7 @@ export default class TableVisualization extends Component {
                             columnIndex: columnKey,
                             rowIndex,
                             row: getBackwardCompatibleRowForDrilling(row),
-                            intersection: [getBackwardCompatibleHeaderForDrilling(header)]
+                            intersection: [getBackwardCompatibleHeaderForDrilling(afm, header)]
                         },
                         e.target
                     );

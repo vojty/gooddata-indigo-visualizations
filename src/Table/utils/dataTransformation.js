@@ -1,6 +1,7 @@
 import invariant from 'invariant';
 import { get, has, isObject, omit, zip } from 'lodash';
 import { getAttributeElementIdFromAttributeElementUri } from '../../utils/common';
+import { getMeasureUriOrIdentifier } from '../../utils/drilldownEventing';
 
 function getAttributeHeaders(attributeDimension) {
     return attributeDimension.headers
@@ -76,12 +77,12 @@ export function validateTableProportions(headers, rows) {
     );
 }
 
-export function getBackwardCompatibleHeaderForDrilling(header) {
+export function getBackwardCompatibleHeaderForDrilling(afm, header) {
     if (header.type === 'attribute') {
         return {
             type: 'attrLabel',
-            id: header.localIdentifier,
-            identifier: header.localIdentifier,
+            id: header.identifier,
+            identifier: header.identifier,
             uri: header.uri,
             title: header.name
         };
@@ -91,7 +92,7 @@ export function getBackwardCompatibleHeaderForDrilling(header) {
         type: 'metric',
         id: header.localIdentifier,
         identifier: '',
-        uri: header.uri,
+        uri: getMeasureUriOrIdentifier(afm, header.localIdentifier).uri,
         title: header.name,
         format: header.format
     };
