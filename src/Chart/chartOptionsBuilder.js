@@ -273,16 +273,20 @@ export function getDrillContext(stackByItem, viewByItem, measure) {
         localIdentifier,
         attribute // attribute header if available
     }) => {
+        if (attribute) {
+            return {
+                id: getAttributeElementIdFromAttributeElementUri(uri),
+                value: name,
+                identifier: attribute.identifier,
+                uri: attribute.uri
+            };
+        }
         return {
-            id: attribute
-                ? getAttributeElementIdFromAttributeElementUri(uri)
-                : localIdentifier, // attribute value id or measure localIndentifier
-            ...(attribute ? {} : {
-                format
-            }),
+            id: localIdentifier, // attribute value id or measure localIndentifier
+            format,
             value: name, // text label of attribute value or formatted measure value
-            identifier: attribute ? attribute.identifier : identifier, // identifier of attribute or measure
-            uri: attribute ? attribute.uri : uri // uri of attribute or measure
+            identifier, // identifier of attribute or measure
+            uri // uri of attribute or measure
         };
     });
 }
