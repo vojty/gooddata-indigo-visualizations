@@ -276,7 +276,7 @@ describe('Table', () => {
                     ...DATA_2A_3M
                 });
 
-                const footer = getInstanceFromWrapper(wrapper, TableVisualization).footer;
+                const { footer } = getInstanceFromWrapper(wrapper, TableVisualization);
 
                 expect(footer.classList.contains('table-footer')).toBeTruthy();
 
@@ -290,7 +290,7 @@ describe('Table', () => {
                     totalsWithData: TOTALS,
                     ...DATA_2A_3M
                 });
-                const footer = getInstanceFromWrapper(wrapper, TableVisualization).footer;
+                const { footer } = getInstanceFromWrapper(wrapper, TableVisualization);
 
                 const heightBefore = TOTALS.length * DEFAULT_FOOTER_ROW_HEIGHT;
 

@@ -45,7 +45,7 @@ function formatAsPercent() {
 }
 
 function getShowInPercentConfiguration(chartOptions) {
-    const showInPercent = chartOptions.showInPercent;
+    const { showInPercent } = chartOptions;
 
     return showInPercent ? {
         yAxis: {
@@ -235,7 +235,7 @@ function stackLabelFormatter() {
 function getTooltipConfiguration(chartOptions) {
     const tooltipAction = get(chartOptions, 'actions.tooltip');
     const chartType = chartOptions.type;
-    const stacking = chartOptions.stacking;
+    const { stacking } = chartOptions;
 
     return tooltipAction ? {
         tooltip: {
@@ -289,7 +289,7 @@ function getLabelsConfiguration(chartOptions) {
 }
 
 function getStackingConfiguration(chartOptions) {
-    const stacking = chartOptions.stacking;
+    const { stacking } = chartOptions;
 
     return stacking ? {
         plotOptions: {

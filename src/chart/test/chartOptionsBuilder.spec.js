@@ -226,7 +226,7 @@ describe('chartOptionsBuilder', () => {
                 .headers[0]
                 .measureGroupHeader
                 .items[0];
-            const afm = fixtures.barChartWithPopMeasureAndViewByAttribute.executionRequest.afm;
+            const { afm } = fixtures.barChartWithPopMeasureAndViewByAttribute.executionRequest;
             expect(
                 isPopMeasure(measureItem, afm)
             ).toEqual(true);
@@ -240,7 +240,7 @@ describe('chartOptionsBuilder', () => {
                 .headers[0]
                 .measureGroupHeader
                 .items[1];
-            const afm = fixtures.barChartWithPopMeasureAndViewByAttribute.executionRequest.afm;
+            const { afm } = fixtures.barChartWithPopMeasureAndViewByAttribute.executionRequest;
 
             expect(
                 isPopMeasure(measureItem, afm)
@@ -292,11 +292,10 @@ describe('chartOptionsBuilder', () => {
     });
 
     describe('findAttributeInDimension', () => {
-        const dimensions = fixtures.barChartWithStackByAndViewByAttributes.executionResponse.dimensions;
-        const headerItems = fixtures
+        const { dimensions } = fixtures.barChartWithStackByAndViewByAttributes.executionResponse;
+        const { headerItems } = fixtures
             .barChartWithStackByAndViewByAttributes
-            .executionResult
-            .headerItems;
+            .executionResult;
         it('should return the view by attribute header with header items', () => {
             const returnValue = findAttributeInDimension(
                 dimensions[VIEW_BY_DIMENSION_INDEX],
@@ -340,7 +339,7 @@ describe('chartOptionsBuilder', () => {
     describe('getColorPalette', () => {
         it('should just return the original palette if there are no pop measures shorten to cover all legend items', () => {
             const [measureGroup, viewByAttribute, stackByAttribute] = getMVS(fixtures.barChartWithoutAttributes);
-            const afm = fixtures.barChartWithoutAttributes.executionRequest.afm;
+            const { afm } = fixtures.barChartWithoutAttributes.executionRequest;
             const type = 'column';
             expect(
                 getColorPalette(
@@ -356,7 +355,7 @@ describe('chartOptionsBuilder', () => {
         it('should return a palette with a lighter color for each pop measure based on it`s source measure', () => {
             const [measureGroup, viewByAttribute, stackByAttribute] =
                 getMVS(fixtures.barChartWithPopMeasureAndViewByAttribute);
-            const afm = fixtures.barChartWithPopMeasureAndViewByAttribute.executionRequest.afm;
+            const { afm } = fixtures.barChartWithPopMeasureAndViewByAttribute.executionRequest;
             const type = 'column';
 
             const originalColorLightness = 0;
@@ -612,7 +611,7 @@ describe('chartOptionsBuilder', () => {
                 attribute: stackByAttribute
             };
 
-            const afm = dataSet.executionRequest.afm;
+            const { afm } = dataSet.executionRequest;
             const drillContext = getDrillContext(stackByItem, viewByItem, measure, afm);
             expect(drillContext).toEqual([
                 {
@@ -645,7 +644,7 @@ describe('chartOptionsBuilder', () => {
             const viewByItem = null;
             const stackByItem = null;
 
-            const afm = dataSet.executionRequest.afm;
+            const { afm } = dataSet.executionRequest;
             const drillContext = getDrillContext(stackByItem, viewByItem, measure, afm);
             expect(drillContext).toEqual([
                 {
@@ -662,7 +661,7 @@ describe('chartOptionsBuilder', () => {
     describe('getDrillableSeries', () => {
         describe('in usecase of bar chart with 6 pop measures and view by attribute', () => {
             const dataSet = fixtures.barChartWith6PopMeasuresAndViewByAttribute;
-            const afm = dataSet.executionRequest.afm;
+            const { afm } = dataSet.executionRequest;
             const mVS = getMVS(dataSet);
             const type = 'bar';
             const seriesWithoutDrillability = getSeries(
@@ -699,7 +698,7 @@ describe('chartOptionsBuilder', () => {
 
         describe('in usecase of bar chart with 3 measures and view by attribute', () => {
             const dataSet = fixtures.barChartWith3MetricsAndViewByAttribute;
-            const afm = dataSet.executionRequest.afm;
+            const { afm } = dataSet.executionRequest;
             const mVS = getMVS(dataSet);
             const type = 'column';
             const seriesWithoutDrillability = getSeries(

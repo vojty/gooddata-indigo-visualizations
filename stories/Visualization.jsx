@@ -64,39 +64,41 @@ class DynamicVisualization extends React.Component {
 
     render() {
         const { dataSet, legendOption, chartType } = this.state;
-        return (<div>
+        return (
             <div>
-                {screenshotWrap(wrap(<Visualization
-                    config={{
-                        type: chartType,
-                        legend: legendOption
-                    }}
-                    {...dataSet}
-                    onDataTooLarge={action('Data too large')}
-                    onNegativeValues={action('Negative values in pie chart')}
-                />, 600))}
+                <div>
+                    {screenshotWrap(wrap(<Visualization
+                        config={{
+                            type: chartType,
+                            legend: legendOption
+                        }}
+                        {...dataSet}
+                        onDataTooLarge={action('Data too large')}
+                        onNegativeValues={action('Negative values in pie chart')}
+                    />, 600))}
+                </div>
+                <br />
+                <div>
+                    { Object.keys(this.fixtures).map(dataSetName => (
+                        <button key={dataSetName} onClick={() => this.setDataSet(dataSetName)} >{dataSetName}</button>
+                    )) }
+                </div>
+                <div>
+                    { Object.keys(this.legendOptions).map(legendOptionsItem => (
+                        <button key={legendOptionsItem} onClick={() => this.setLegend(legendOptionsItem)} >
+                            {legendOptionsItem}
+                        </button>
+                    )) }
+                </div>
+                <div>
+                    { this.chartTypes.map(chartTypeOption => (
+                        <button key={chartTypeOption} onClick={() => this.setChartType(chartTypeOption)} >
+                            {chartTypeOption}
+                        </button>
+                    )) }
+                </div>
             </div>
-            <br />
-            <div>
-                { Object.keys(this.fixtures).map(dataSetName => (
-                    <button key={dataSetName} onClick={() => this.setDataSet(dataSetName)} >{dataSetName}</button>
-                )) }
-            </div>
-            <div>
-                { Object.keys(this.legendOptions).map(legendOptionsItem => (
-                    <button key={legendOptionsItem} onClick={() => this.setLegend(legendOptionsItem)} >
-                        {legendOptionsItem}
-                    </button>
-                )) }
-            </div>
-            <div>
-                { this.chartTypes.map(chartTypeOption => (
-                    <button key={chartTypeOption} onClick={() => this.setChartType(chartTypeOption)} >
-                        {chartTypeOption}
-                    </button>
-                )) }
-            </div>
-        </div>);
+        );
     }
 }
 

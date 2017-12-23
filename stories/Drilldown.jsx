@@ -107,8 +107,10 @@ storiesOf('Drilldown', module)
                         '100%'
                     )
                 }
-                <p>Line chart with onFiredDrillEvent where drillEvent
-                    is logged into console and default event is prevented</p>
+                <p>
+                    Line chart with onFiredDrillEvent where drillEvent
+                    is logged into console and default event is prevented
+                </p>
                 {
                     wrap(
                         <Visualization

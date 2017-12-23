@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Rx';
 
 export function parseValue(value) {
     const parsedValue = parseFloat(value);
-    return isNaN(parsedValue) ? null : parsedValue;
+    return isNaN(parsedValue) ? null : parsedValue; // eslint-disable-line no-restricted-globals
 }
 
 export const immutableSet = (dataSet, path, newValue) => setWith({ ...dataSet }, path, newValue, clone);

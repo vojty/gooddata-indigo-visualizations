@@ -50,7 +50,8 @@ export default class LegendItem extends Component {
                     className="series-name"
                     style={nameStyle}
                     title={unescape(item.name)}
-                >{item.name}</div>
+                >{item.name}
+                </div>
             </div>
         );
     }

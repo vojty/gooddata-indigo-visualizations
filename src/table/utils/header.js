@@ -12,7 +12,7 @@ const MOBILE_SORT_TOOLTIP_OFFSET = 20;
 
 const isLeftAligned = columnAlign => columnAlign === ALIGN_LEFT;
 const getPoints = (x, y = -HEADER_PADDING) => ({ x, y }); // y has always offset
-const simplifyText = string.simplifyText;
+const { simplifyText } = string;
 
 export function calculateArrowPositions(column, tableScrollX, tableWrapRef) {
     const tableWrapRect = tableWrapRef.getBoundingClientRect();

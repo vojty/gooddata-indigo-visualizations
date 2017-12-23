@@ -166,7 +166,7 @@ export class TableVisualization extends Component {
         this.tableInnerContainer = this.table.querySelector('.fixedDataTableLayout_rowsContainer');
         const tableRows = this.table.querySelectorAll('.fixedDataTableRowLayout_rowWrapper');
 
-        this.header = tableRows[0];
+        this.header = tableRows[0]; // eslint-disable-line prefer-destructuring
         this.header.classList.add('table-header');
 
         if (this.hasFooterWithTotals()) {

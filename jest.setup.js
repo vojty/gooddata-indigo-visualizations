@@ -1,7 +1,9 @@
 import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-15.4';
+import Adapter from 'enzyme-adapter-react-15';
 
 Enzyme.configure({ adapter: new Adapter() });
+
+window.scrollTo = () => {};
 
 // Fail test on console error (react proptypes validation etc.)
 const consoleError = console.error; // eslint-disable-line no-console

@@ -91,7 +91,7 @@ export const barChartWith6PopMeasuresAndViewByAttribute = (() => {
         barChartWithPopMeasureAndViewByAttribute,
         'executionRequest.afm.measures',
         range(n).reduce((result, measuresIndex) => {
-            const measures = barChartWithPopMeasureAndViewByAttribute.executionRequest.afm.measures;
+            const { measures } = barChartWithPopMeasureAndViewByAttribute.executionRequest.afm;
             const popMeasure = cloneDeep(measures[0]);
             const postfix = `_${measuresIndex}`;
             popMeasure.localIdentifier += postfix;
