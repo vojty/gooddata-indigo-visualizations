@@ -50,7 +50,7 @@
     "node": ">=4.*"
   },
   "devDependencies": {
-    "@gooddata/test-storybook": "1.0.1",
+    "@gooddata/test-storybook": "1.0.2",
     "@storybook/react": "3.2.17",
     "babel-cli": "6.23.0",
     "babel-core": "6.23.1",
