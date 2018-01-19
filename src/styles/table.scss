@@ -257,11 +257,13 @@ $gdc-goodstrap-basepath: '~@gooddata/goodstrap/lib/';
         .indigo-table-footer-cell {
             position: relative;
             box-sizing: border-box;
+            overflow: hidden;
             padding: 0 8px;
             border-bottom: 1px solid $footer-border;
             font-size: 12px;
             line-height: 30px;
             text-transform: none;
+            text-overflow: ellipsis;
 
             &:first-child {
                 border-top: 1px solid $footer-border-top;
@@ -281,25 +283,24 @@ $gdc-goodstrap-basepath: '~@gooddata/goodstrap/lib/';
         }
 
         .indigo-totals-disable-column-button {
-            max-width: 0;
+            max-width: 23px;
         }
 
-        .indigo-totals-disable-column-button::before {
-            left: -15px;
-        }
-
-        .indigo-totals-disable-column-button::before,
-        .indigo-totals-enable-column-button::before {
+        .indigo-totals-disable-column-button,
+        .indigo-totals-enable-column-button {
             display: none;
-            width: 18px;
-            height: 18px;
-            font-size: 15px;
-            line-height: 14px;
+
+            &::before {
+                width: 18px;
+                height: 18px;
+                font-size: 15px;
+                line-height: 14px;
+            }
         }
 
-        .indigo-table-footer-cell:hover .indigo-totals-disable-column-button::before,
-        .indigo-table-footer-cell:hover .indigo-totals-enable-column-button::before {
-            display: block;
+        .indigo-table-footer-cell:hover .indigo-totals-disable-column-button,
+        .indigo-table-footer-cell:hover .indigo-totals-enable-column-button {
+            display: inline-block;
         }
     }
 
@@ -466,32 +467,44 @@ $gdc-goodstrap-basepath: '~@gooddata/goodstrap/lib/';
         .indigo-totals-row-remove-button {
             position: absolute;
             z-index: 3;
-            top: -7px;
+            top: -13px;
             right: -6px;
             visibility: hidden;
             overflow: hidden;
-            width: 15px;
-            height: 15px;
-            padding: 0;
-            border: 2px solid $gd-color-highlight;
-            border-radius: 50%;
-            background: $gd-color-highlight;
+            width: 25px;
+            height: 25px;
+            padding: 0 0 0 9px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            background: transparent;
             cursor: pointer;
             pointer-events: auto;
-
-            &:hover {
-                border-color: $gd-color-negative;
-                background: $gd-color-negative;
-            }
 
             &::before {
                 content: '\E639';
                 display: block;
-                margin: -2px;
-                font-size: 16px;
+                overflow: hidden;
+                width: 12px;
+                height: 12px;
+                padding: 0;
+                border: 2px solid $gd-color-highlight;
+                border-radius: 50%;
                 font-family: 'Indigo';
-                line-height: 16px;
+                font-size: 17px;
+                line-height: 13px;
+                text-indent: -2px;
                 color: #fff;
+                background: $gd-color-highlight;
+            }
+
+            &:hover {
+                visibility: visible;
+            }
+
+            &:hover::before {
+                border-color: $gd-color-negative;
+                background: $gd-color-negative;
             }
         }
     }
