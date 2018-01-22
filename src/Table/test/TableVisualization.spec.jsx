@@ -1,9 +1,10 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { Table } from 'fixed-data-table-2';
+import Portal from 'react-portal';
 
 import TableVisualization, { DEFAULT_FOOTER_ROW_HEIGHT } from '../TableVisualization';
-import { withIntl } from '../../test/utils';
+import { withIntl, wrapWithIntl } from '../../test/utils';
 import { ASC, DESC } from '../constants/sort';
 import { EXECUTION_REQUEST_1A_2M, TABLE_HEADERS_1A_2M, TABLE_ROWS_1A_2M } from '../fixtures/1attribute2measures';
 import { EXECUTION_REQUEST_2M, TABLE_HEADERS_2M, TABLE_ROWS_2M } from '../fixtures/2measures';
@@ -13,6 +14,19 @@ import { TotalCell } from '../Totals/TotalCell';
 
 function getInstanceFromWrapper(wrapper, component) {
     return wrapper.find(component).childAt(0).instance();
+}
+
+function delay(timeout = 0) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, timeout);
+    });
+}
+
+function createPortalWrapper(tableWrapper) {
+    const portalInstance = tableWrapper.find(Portal).at(0).instance();
+    return new ReactWrapper(wrapWithIntl(portalInstance.props.children));
 }
 
 const WrappedTable = withIntl(TableVisualization);
@@ -37,6 +51,24 @@ describe('Table', () => {
         const wrapper = renderTable();
         expect(wrapper.find(Table).prop('width')).toEqual(600);
         expect(wrapper.find(Table).prop('height')).toEqual(400);
+    });
+
+    it('should sort by clicking on button in tooltip', () => {
+        const onSortChange = jest.fn();
+        const wrapper = renderTable({
+            sortInTooltip: true,
+            onSortChange
+        });
+
+        const header = wrapper.find('.gd-table-header-ordering').at(0);
+        header.simulate('click');
+        return delay().then(() => {
+            expect(onSortChange).toHaveBeenCalledTimes(0);
+            const portalWrapper = createPortalWrapper(wrapper);
+            const btn = portalWrapper.find('.button-sort-asc');
+            btn.simulate('click');
+            expect(onSortChange).toHaveBeenCalledTimes(1);
+        });
     });
 
     it('should render column headers', () => {
