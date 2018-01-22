@@ -1,4 +1,4 @@
-import { getHeaderSortClassName, getNextSortDir, getSortInfo, getSortItem } from '../sort';
+import { createSortItem, getHeaderSortClassName, getNextSortDir, getSortInfo, getSortItem } from '../sort';
 import { ASC, DESC } from '../../constants/sort';
 import { TABLE_HEADERS_2A_3M } from '../../fixtures/2attributes3measures';
 
@@ -221,6 +221,18 @@ describe('Table utils - Sort', () => {
             expect(() => {
                 getSortInfo(SORT_ITEM_WITH_UNKNOWN_IDENTIFIER, TABLE_HEADERS_2A_3M);
             }).toThrow('Cannot find sort identifier unknown_identifier in table headers');
+        });
+    });
+
+    describe('createSortItem', () => {
+        it('should create attribute sort item', () => {
+            const sort = { dir: null, nextDir: 'asc', sortDirClass: '' };
+            expect(createSortItem(TABLE_HEADERS_2A_3M[1], sort)).toEqual(ATTRIBUTE_SORT_ITEM);
+        });
+
+        it('should create measure sort item', () => {
+            const sort = { dir: null, nextDir: 'desc', sortDirClass: '' };
+            expect(createSortItem(TABLE_HEADERS_2A_3M[3], sort)).toEqual(MEASURE_SORT_ITEM);
         });
     });
 });

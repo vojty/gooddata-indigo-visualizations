@@ -17,7 +17,7 @@ import { getCellClassNames, getColumnAlign, getStyledLabel } from './utils/cell'
 import { getBackwardCompatibleHeaderForDrilling, getBackwardCompatibleRowForDrilling } from './utils/dataTransformation';
 import { cellClick, isDrillable } from '../utils/drilldownEventing';
 import RemoveRows from './Totals/RemoveRows';
-import { getHeaderSortClassName, getNextSortDir } from './utils/sort';
+import { createSortItem, getHeaderSortClassName, getNextSortDir } from './utils/sort';
 import { getFooterHeight, getFooterPositions, isFooterAtDefaultPosition, isFooterAtEdgePosition } from './utils/footer';
 import { updatePosition } from './utils/row';
 import {
@@ -246,28 +246,9 @@ export class TableVisualization extends Component {
 
     getSortFunc(header, sort) {
         const { onSortChange } = this.props;
+        const sortItem = createSortItem(header, sort);
 
-        const sortItem = header.type === 'attribute'
-            ? {
-                attributeSortItem: {
-                    direction: sort.nextDir,
-                    attributeIdentifier: header.localIdentifier
-                }
-            }
-            : {
-                measureSortItem: {
-                    direction: sort.nextDir,
-                    locators: [
-                        {
-                            measureLocatorItem: {
-                                measureIdentifier: header.localIdentifier
-                            }
-                        }
-                    ]
-                }
-            };
-
-        return onSortChange(sortItem);
+        return () => onSortChange(sortItem);
     }
 
     getSortObj(header, index) {
@@ -608,7 +589,7 @@ export class TableVisualization extends Component {
         const onMouseEnter = this.getMouseOverFunc(columnIndex);
         const onMouseLeave = this.getMouseOverFunc(null);
         const sort = this.getSortObj(header, columnIndex);
-        const onClick = () => this.getSortFunc(header, sort);
+        const onClick = this.getSortFunc(header, sort);
 
         const columnAlign = getColumnAlign(header);
         const tooltipAlignPoints = getTooltipAlignPoints(columnAlign);

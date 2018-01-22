@@ -25,3 +25,11 @@ export function createIntlMock() {
     const { intl } = intlProvider.getChildContext();
     return intl;
 }
+
+export function wrapWithIntl(children, intlOptions = defaultIntlOptions) {
+    return (
+        <IntlProvider {...intlOptions}>
+            {React.cloneElement(children)}
+        </IntlProvider>
+    );
+}

@@ -93,3 +93,25 @@ export function getSortInfo(sortItem, tableHeaders) {
 
     throw new Error(`Unknown sort item: ${Object.keys(sortItem)[0]}`);
 }
+
+export function createSortItem(header, sort) {
+    return header.type === 'attribute'
+        ? {
+            attributeSortItem: {
+                direction: sort.nextDir,
+                attributeIdentifier: header.localIdentifier
+            }
+        }
+        : {
+            measureSortItem: {
+                direction: sort.nextDir,
+                locators: [
+                    {
+                        measureLocatorItem: {
+                            measureIdentifier: header.localIdentifier
+                        }
+                    }
+                ]
+            }
+        };
+}
