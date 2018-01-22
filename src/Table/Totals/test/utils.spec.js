@@ -279,14 +279,18 @@ describe('Totals', () => {
 
         it('should set proper style \'top\' property to referenced node', () => {
             const isTotalsEditAllowed = true;
-            updateTotalsRemovePosition(tableBoundingRect, totals, isTotalsEditAllowed, ref);
+            const totalsVisible = true;
+
+            updateTotalsRemovePosition(tableBoundingRect, totals, isTotalsEditAllowed, totalsVisible, ref);
 
             expect(ref.style.top).toEqual('-70px');
         });
 
         it('should not set any style \'top\' property to referenced node if edit is not allowed', () => {
             const isTotalsEditAllowed = false;
-            updateTotalsRemovePosition(tableBoundingRect, totals, isTotalsEditAllowed, ref);
+            const totalsVisible = false;
+
+            updateTotalsRemovePosition(tableBoundingRect, totals, isTotalsEditAllowed, totalsVisible, ref);
 
             expect(ref.style.top).toEqual('');
         });

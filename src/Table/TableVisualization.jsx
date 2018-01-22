@@ -369,9 +369,10 @@ export class TableVisualization extends Component {
     }
 
     scrollHeader(isScrollingStopped = false) {
-        const { stickyHeaderOffset, sortInTooltip, totalsWithData, hasHiddenRows } = this.props;
+        const { stickyHeaderOffset, sortInTooltip, totalsWithData, hasHiddenRows, headers } = this.props;
         const tableBoundingRect = this.tableInnerContainer.getBoundingClientRect();
         const totalsEditAllowed = this.isTotalsEditAllowed();
+        const totalsVisible = shouldShowTotals(headers);
 
         const isOutOfViewport = tableBoundingRect.bottom < 0;
         if (isOutOfViewport) {
@@ -392,7 +393,8 @@ export class TableVisualization extends Component {
             hasHiddenRows,
             totalsWithData,
             tableBoundingRect.bottom,
-            totalsEditAllowed
+            totalsEditAllowed,
+            totalsVisible
         );
 
         const positions = getHeaderPositions(
@@ -400,6 +402,7 @@ export class TableVisualization extends Component {
             hasHiddenRows,
             totalsWithData,
             totalsEditAllowed,
+            totalsVisible,
             {
                 height: tableBoundingRect.height,
                 top: tableBoundingRect.top
@@ -416,9 +419,10 @@ export class TableVisualization extends Component {
     }
 
     scrollFooter(isScrollingStopped = false) {
-        const { hasHiddenRows, totalsWithData } = this.props;
+        const { hasHiddenRows, totalsWithData, headers } = this.props;
         const tableBoundingRect = this.tableInnerContainer.getBoundingClientRect();
         const totalsEditAllowed = this.isTotalsEditAllowed();
+        const totalsVisible = shouldShowTotals(headers);
 
         const isOutOfViewport = tableBoundingRect.top > window.innerHeight;
         if (isOutOfViewport || !this.hasFooterWithTotals()) {
@@ -436,6 +440,7 @@ export class TableVisualization extends Component {
             totalsWithData,
             window.innerHeight,
             totalsEditAllowed,
+            totalsVisible,
             {
                 height: tableBoundingRect.height,
                 bottom: tableBoundingRect.bottom
@@ -447,6 +452,7 @@ export class TableVisualization extends Component {
             totalsWithData,
             window.innerHeight,
             totalsEditAllowed,
+            totalsVisible,
             {
                 height: tableBoundingRect.height,
                 bottom: tableBoundingRect.bottom
@@ -463,7 +469,7 @@ export class TableVisualization extends Component {
 
         if (this.totalsRemoveComponentRef) {
             const wrapperRef = this.totalsRemoveComponentRef.getWrapperRef();
-            updateTotalsRemovePosition(tableBoundingRect, totalsWithData, this.isTotalsEditAllowed(), wrapperRef);
+            updateTotalsRemovePosition(tableBoundingRect, totalsWithData, totalsVisible, totalsEditAllowed, wrapperRef);
         }
     }
 
@@ -773,7 +779,7 @@ export class TableVisualization extends Component {
         } = this.props;
 
         const height = containerMaxHeight ? undefined : containerHeight;
-        const footerHeight = getFooterHeight(totalsWithData, this.isTotalsEditAllowed());
+        const footerHeight = getFooterHeight(totalsWithData, this.isTotalsEditAllowed(), shouldShowTotals(headers));
         const columnWidth = Math.max(containerWidth / headers.length, MIN_COLUMN_WIDTH);
         const isSticky = TableVisualization.isSticky(stickyHeaderOffset);
 
