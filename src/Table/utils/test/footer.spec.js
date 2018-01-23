@@ -7,17 +7,42 @@ import {
 
 describe('Table utils - Footer', () => {
     describe('getFooterHeight', () => {
-        it('should return proper height', () => {
-            const totals = [
-                { type: 'sum', outputMeasureIndexes: [] },
-                { type: 'avg', outputMeasureIndexes: [] }
-            ];
-            expect(getFooterHeight(totals)).toEqual(60);
+        const twoTotals = [
+            { type: 'sum', outputMeasureIndexes: [] },
+            { type: 'avg', outputMeasureIndexes: [] }
+        ];
+
+        describe('edit allowed and totals visible', () => {
+            it('should return sum of aggregation rows and height of the row for adding aggregaitons', () => {
+                const editAllowed = true;
+                const totalsVisible = true;
+                expect(getFooterHeight(twoTotals, editAllowed, totalsVisible)).toEqual((2 * 30) + 50);
+            });
         });
 
-        it('should return zero height when no totals are given', () => {
-            const totals = [];
-            expect(getFooterHeight(totals)).toEqual(0);
+        describe('edit not allowed and totals visible', () => {
+            it('should return sum of aggregation rows', () => {
+                const editAllowed = false;
+                const totalsVisible = true;
+                expect(getFooterHeight(twoTotals, editAllowed, totalsVisible)).toEqual(2 * 30);
+            });
+        });
+
+        describe('edit not allowed and totals not visible', () => {
+            it('should return sum of aggregation rows', () => {
+                const editAllowed = false;
+                const totalsVisible = false;
+                expect(getFooterHeight(twoTotals, editAllowed, totalsVisible)).toEqual(0);
+            });
+        });
+
+        describe('edit allowed and totals visible, empty totals', () => {
+            it('should return height of the row for adding aggregaitons', () => {
+                const editAllowed = true;
+                const totalsVisible = true;
+                const emptyTotals = [];
+                expect(getFooterHeight(emptyTotals, editAllowed, totalsVisible)).toEqual(50);
+            });
         });
     });
 
@@ -59,14 +84,19 @@ describe('Table utils - Footer', () => {
         const hasHiddenRows = false;
         const windowHeight = 500;
         const totalsEditAllowed = false;
+        const totalsVisible = true;
 
         it('should return true if footer is at its edge position', () => {
             const tableDimensions = {
                 height: 500,
                 bottom: 1000
             };
-            expect(isFooterAtEdgePosition(hasHiddenRows, totals, windowHeight, totalsEditAllowed, tableDimensions))
-                .toEqual(true);
+
+            const footerAtEdgePosition = isFooterAtEdgePosition(
+                hasHiddenRows, totals, windowHeight, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+
+            expect(footerAtEdgePosition).toBe(true);
         });
 
         it('should return false if footer is not at its edge position', () => {
@@ -74,8 +104,12 @@ describe('Table utils - Footer', () => {
                 height: 500,
                 bottom: 100
             };
-            expect(isFooterAtEdgePosition(hasHiddenRows, totals, windowHeight, totalsEditAllowed, tableDimensions))
-                .toEqual(false);
+
+            const footerAtEdgePosition = isFooterAtEdgePosition(
+                hasHiddenRows, totals, windowHeight, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+
+            expect(footerAtEdgePosition).toBe(false);
         });
     });
 
@@ -88,15 +122,19 @@ describe('Table utils - Footer', () => {
                 bottom: 500
             };
             let windowHeight = 400;
-            const totalsEditAllowed = false;
+            let totalsEditAllowed = false;
+            let totalsVisible = true;
 
-            expect(getFooterPositions(hasHiddenRows, totals, windowHeight, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: -100,
-                    defaultTop: -15,
-                    edgeTop: -139,
-                    fixedTop: 100
-                });
+            let footerPositions = getFooterPositions(
+                hasHiddenRows, totals, windowHeight, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+
+            expect(footerPositions).toEqual({
+                absoluteTop: -100,
+                defaultTop: -15,
+                edgeTop: -139,
+                fixedTop: 100
+            });
 
             tableDimensions = {
                 height: 500,
@@ -104,21 +142,27 @@ describe('Table utils - Footer', () => {
             };
             windowHeight = 800;
 
-            expect(getFooterPositions(hasHiddenRows, totals, windowHeight, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: -200,
-                    defaultTop: -15,
-                    edgeTop: -339,
-                    fixedTop: 300
-                });
+            footerPositions = getFooterPositions(
+                hasHiddenRows, totals, windowHeight, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(footerPositions).toEqual({
+                absoluteTop: -200,
+                defaultTop: -15,
+                edgeTop: -339,
+                fixedTop: 300
+            });
 
-            expect(getFooterPositions(hasHiddenRows, totals, windowHeight, true, tableDimensions))
-                .toEqual({
-                    absoluteTop: -200,
-                    defaultTop: -15,
-                    edgeTop: -289,
-                    fixedTop: 300
-                });
+            totalsEditAllowed = true;
+
+            footerPositions = getFooterPositions(
+                hasHiddenRows, totals, windowHeight, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(footerPositions).toEqual({
+                absoluteTop: -200,
+                defaultTop: -15,
+                edgeTop: -289,
+                fixedTop: 300
+            });
 
             hasHiddenRows = false;
             tableDimensions = {
@@ -126,14 +170,29 @@ describe('Table utils - Footer', () => {
                 bottom: 100
             };
             windowHeight = 500;
+            totalsEditAllowed = false;
 
-            expect(getFooterPositions(hasHiddenRows, totals, windowHeight, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: 400,
-                    defaultTop: -0,
-                    edgeTop: -154,
-                    fixedTop: 200
-                });
+            footerPositions = getFooterPositions(
+                hasHiddenRows, totals, windowHeight, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(footerPositions).toEqual({
+                absoluteTop: 400,
+                defaultTop: -0,
+                edgeTop: -154,
+                fixedTop: 200
+            });
+
+            totalsVisible = false;
+
+            footerPositions = getFooterPositions(
+                hasHiddenRows, totals, windowHeight, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(footerPositions).toEqual({
+                absoluteTop: 400,
+                defaultTop: -0,
+                edgeTop: -244,
+                fixedTop: 200
+            });
         });
     });
 });

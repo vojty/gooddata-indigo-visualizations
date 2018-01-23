@@ -99,12 +99,14 @@ export function addTotalsRow(totals, totalItemTypeToAdd) {
     return updatedTotals;
 }
 
-export function updateTotalsRemovePosition(tableBoundingRect, totals, isTotalsEditAllowed, removeWrapper) {
+export function updateTotalsRemovePosition(
+    tableBoundingRect, totals, isTotalsEditAllowed, totalsVisible, removeWrapper
+) {
     if (!isTotalsEditAllowed) {
         return;
     }
 
-    const translateY = tableBoundingRect.height - getFooterHeight(totals, isTotalsEditAllowed);
+    const translateY = tableBoundingRect.height - getFooterHeight(totals, isTotalsEditAllowed, totalsVisible);
 
     /* eslint-disable no-param-reassign */
     removeWrapper.style.bottom = 'auto';

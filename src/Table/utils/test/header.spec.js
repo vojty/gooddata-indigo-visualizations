@@ -113,17 +113,25 @@ describe('Table utils - Header', () => {
         const hasHiddenRows = true;
         const totals = [];
         const totalsEditAllowed = false;
+        const totalsVisible = false;
 
         it('should return true if header is at its edge position', () => {
             const tableBottom = 50;
-            expect(isHeaderAtEdgePosition(stickyHeaderOffset, hasHiddenRows, totals, tableBottom, totalsEditAllowed))
-                .toEqual(true);
+
+            const headerAtEdgePosition = isHeaderAtEdgePosition(
+                stickyHeaderOffset, hasHiddenRows, totals, tableBottom, totalsEditAllowed, totalsVisible
+            );
+
+            expect(headerAtEdgePosition).toBe(true);
         });
 
         it('should return false if header is not at its edge position', () => {
             const tableBottom = 500;
-            expect(isHeaderAtEdgePosition(stickyHeaderOffset, hasHiddenRows, totals, tableBottom, totalsEditAllowed))
-                .toEqual(false);
+            const headerAtEdgePosition = isHeaderAtEdgePosition(
+                stickyHeaderOffset, hasHiddenRows, totals, tableBottom, totalsEditAllowed, totalsVisible
+            );
+
+            expect(headerAtEdgePosition).toBe(false);
         });
     });
 
@@ -132,19 +140,22 @@ describe('Table utils - Header', () => {
             const stickyHeaderOffset = 0;
             let hasHiddenRows = true;
             let totals = [];
-            const totalsEditAllowed = false;
+            let totalsEditAllowed = false;
+            let totalsVisible = false;
             let tableDimensions = {
                 height: 500,
                 top: 50
             };
 
-            expect(getHeaderPositions(stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: -50,
-                    defaultTop: 0,
-                    edgeTop: 414,
-                    fixedTop: 0
-                });
+            let headerPositions = getHeaderPositions(
+                stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(headerPositions).toEqual({
+                absoluteTop: -50,
+                defaultTop: 0,
+                edgeTop: 414,
+                fixedTop: 0
+            });
 
             hasHiddenRows = true;
             totals = [1, 2, 3];
@@ -152,34 +163,44 @@ describe('Table utils - Header', () => {
                 height: 500,
                 top: 50
             };
+            totalsVisible = true;
 
-            expect(getHeaderPositions(stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: -50,
-                    defaultTop: 0,
-                    edgeTop: 324,
-                    fixedTop: 0
-                });
+            headerPositions = getHeaderPositions(
+                stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(headerPositions).toEqual({
+                absoluteTop: -50,
+                defaultTop: 0,
+                edgeTop: 324,
+                fixedTop: 0
+            });
 
             hasHiddenRows = false;
             totals = [1, 2, 3];
 
-            expect(getHeaderPositions(stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: -50,
-                    defaultTop: 0,
-                    edgeTop: 354,
-                    fixedTop: 0
-                });
+            headerPositions = getHeaderPositions(
+                stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(headerPositions).toEqual({
+                absoluteTop: -50,
+                defaultTop: 0,
+                edgeTop: 354,
+                fixedTop: 0
+            });
 
-            expect(getHeaderPositions(stickyHeaderOffset, hasHiddenRows, totals, true, tableDimensions))
-                .toEqual({
-                    absoluteTop: -50,
-                    defaultTop: 0,
-                    edgeTop: 304,
-                    fixedTop: 0
-                });
 
+            totalsEditAllowed = true;
+            headerPositions = getHeaderPositions(
+                stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(headerPositions).toEqual({
+                absoluteTop: -50,
+                defaultTop: 0,
+                edgeTop: 304,
+                fixedTop: 0
+            });
+
+            totalsEditAllowed = false;
             hasHiddenRows = true;
             totals = [];
             tableDimensions = {
@@ -187,24 +208,28 @@ describe('Table utils - Header', () => {
                 top: 100
             };
 
-            expect(getHeaderPositions(stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: -100,
-                    defaultTop: 0,
-                    edgeTop: 114,
-                    fixedTop: 0
-                });
+            headerPositions = getHeaderPositions(
+                stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(headerPositions).toEqual({
+                absoluteTop: -100,
+                defaultTop: 0,
+                edgeTop: 114,
+                fixedTop: 0
+            });
 
             hasHiddenRows = false;
             totals = [];
 
-            expect(getHeaderPositions(stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, tableDimensions))
-                .toEqual({
-                    absoluteTop: -100,
-                    defaultTop: 0,
-                    edgeTop: 144,
-                    fixedTop: 0
-                });
+            headerPositions = getHeaderPositions(
+                stickyHeaderOffset, hasHiddenRows, totals, totalsEditAllowed, totalsVisible, tableDimensions
+            );
+            expect(headerPositions).toEqual({
+                absoluteTop: -100,
+                defaultTop: 0,
+                edgeTop: 144,
+                fixedTop: 0
+            });
         });
     });
 
