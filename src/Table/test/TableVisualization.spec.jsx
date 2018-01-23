@@ -50,7 +50,7 @@ describe('Table', () => {
     it('should fit container dimensions', () => {
         const wrapper = renderTable();
         expect(wrapper.find(Table).prop('width')).toEqual(600);
-        expect(wrapper.find(Table).prop('height')).toEqual(400);
+        expect(wrapper.find(Table).prop('maxHeight')).toEqual(400);
     });
 
     it('should sort by clicking on button in tooltip', () => {

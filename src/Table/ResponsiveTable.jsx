@@ -96,7 +96,7 @@ export default class ResponsiveTable extends Component {
         const tableProps = {
             ...props,
             rows: props.rows.slice(0, this.getRowCount(this.state.page)),
-            containerHeight: 0,
+            containerHeight: this.getContainerMaxHeight(),
             containerMaxHeight: this.getContainerMaxHeight(),
             hasHiddenRows: !this.isMoreButtonDisabled(),
             sortInTooltip: isTouchDevice
