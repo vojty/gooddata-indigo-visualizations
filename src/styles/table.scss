@@ -206,9 +206,8 @@ $gdc-goodstrap-basepath: '~@gooddata/goodstrap/lib/';
         }
 
         .fixedDataTableCellLayout_main {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: normal;
-            text-transform: uppercase;
             color: $gd-color-state-blank;
             background: none;
         }
