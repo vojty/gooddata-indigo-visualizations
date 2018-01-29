@@ -6,17 +6,19 @@ import TableVisualization from './TableVisualization';
 
 export default class Table extends PureComponent {
     static propTypes = {
+        containerMaxHeight: PropTypes.number,
         containerHeight: PropTypes.number,
         containerWidth: PropTypes.number
     };
 
     static defaultProps = {
+        containerMaxHeight: null,
         containerHeight: null,
         containerWidth: null
     };
 
     render() {
-        const { containerHeight, containerWidth } = this.props;
+        const { containerHeight, containerMaxHeight, containerWidth } = this.props;
         return (
             <Measure>
                 {dimensions => (
@@ -24,6 +26,7 @@ export default class Table extends PureComponent {
                         <TableVisualization
                             {...this.props}
                             containerHeight={containerHeight || dimensions.height}
+                            containerMaxHeight={containerMaxHeight}
                             containerWidth={containerWidth || dimensions.width}
                         />
                     </div>

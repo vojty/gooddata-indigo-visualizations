@@ -29,6 +29,7 @@ export default class TableTransformation extends Component {
         executionResponse: ExecutionResponsePropTypes.isRequired,
         executionResult: ExecutionResultPropTypes.isRequired,
         height: PropTypes.number,
+        maxHeight: PropTypes.number,
         onFiredDrillEvent: PropTypes.func,
         onSortChange: PropTypes.func,
         tableRenderer: PropTypes.func,
@@ -43,6 +44,7 @@ export default class TableTransformation extends Component {
         config: {},
         drillableItems: [],
         height: undefined,
+        maxHeight: undefined,
         onFiredDrillEvent: noop,
         onSortChange: noop,
         tableRenderer: renderDefaultTable,
@@ -57,6 +59,7 @@ export default class TableTransformation extends Component {
             executionResponse,
             executionResult,
             height,
+            maxHeight,
             onFiredDrillEvent,
             onSortChange,
             width,
@@ -92,6 +95,10 @@ export default class TableTransformation extends Component {
 
         if (height) {
             tableProps.containerHeight = height;
+        }
+
+        if (maxHeight) {
+            tableProps.containerMaxHeight = maxHeight;
         }
 
         if (width) {

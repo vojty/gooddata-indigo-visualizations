@@ -297,6 +297,13 @@ export class TableVisualization extends Component {
             });
     }
 
+    getTableHeight(height, maxHeight) {
+        if (!maxHeight) {
+            return height;
+        }
+        return height < maxHeight ? height : maxHeight;
+    }
+
     unsetListeners() {
         if (this.subscribers && this.subscribers.length > 0) {
             this.subscribers.forEach((subscriber) => {
@@ -759,7 +766,7 @@ export class TableVisualization extends Component {
             stickyHeaderOffset
         } = this.props;
 
-        const height = containerMaxHeight ? undefined : containerHeight;
+        const height = this.getTableHeight(containerHeight, containerMaxHeight);
         const footerHeight = getFooterHeight(totalsWithData, this.isTotalsEditAllowed(), shouldShowTotals(headers));
         const columnWidth = Math.max(containerWidth / headers.length, MIN_COLUMN_WIDTH);
         const isSticky = TableVisualization.isSticky(stickyHeaderOffset);
@@ -776,8 +783,7 @@ export class TableVisualization extends Component {
                             rowHeight={DEFAULT_ROW_HEIGHT}
                             rowsCount={this.props.rows.length}
                             width={containerWidth}
-                            maxHeight={containerMaxHeight}
-                            height={height}
+                            maxHeight={height}
                             onScrollStart={this.closeBubble}
                         >
                             {this.renderColumns(headers, columnWidth)}
