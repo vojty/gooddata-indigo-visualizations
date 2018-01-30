@@ -33,6 +33,29 @@ const defaultColumnChartProps = {
 document.addEventListener('drill', eventAction('drill'));
 
 storiesOf('Drilldown', module)
+    .add('Column chart with 6 pop measures and view by attribute', () => {
+        const dataSet = fixtures.barChartWith6PopMeasuresAndViewByAttribute;
+        return screenshotWrap(
+            wrap(
+                <Visualization
+                    drillableItems={[{
+                        uri: dataSet.executionRequest.afm.attributes[0].displayForm.uri
+                    }]}
+                    config={{
+                        type: 'column',
+                        legend: {
+                            enabled: true,
+                            position: 'top'
+                        },
+                        legendLayout: 'vertical',
+                        colors: fixtures.customPalette
+                    }}
+                    {...dataSet}
+                    onDataTooLarge={f => f}
+                />
+            )
+        );
+    })
     .add('Line chart drillable by measure', () => {
         const dataSet = fixtures.barChartWithStackByAndViewByAttributes;
         return screenshotWrap(
