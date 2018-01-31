@@ -312,11 +312,8 @@ export function getDrillableSeries(
                 : pointIndex % measureGroup.items.length;
             const measure = unwrap(measureGroup.items[measureIndex]);
 
-            // attributeHeader values over multiple metrics are not a result of carthesian product
-            // viewBy index needs to be devided by number of metrics
-            const viewByIndex = Math.floor(pointIndex / measureGroup.items.length);
             const viewByItem = viewByAttribute ? {
-                ...unwrap(viewByAttribute.items[viewByIndex]),
+                ...unwrap(viewByAttribute.items[pointIndex]),
                 attribute: viewByAttribute
             } : null;
 

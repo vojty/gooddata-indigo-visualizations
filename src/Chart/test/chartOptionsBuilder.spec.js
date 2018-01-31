@@ -660,6 +660,43 @@ describe('chartOptionsBuilder', () => {
     });
 
     describe('getDrillableSeries', () => {
+        describe('in usecase of bar chart with 6 pop measures and view by attribute', () => {
+            const dataSet = fixtures.barChartWith6PopMeasuresAndViewByAttribute;
+            const afm = dataSet.executionRequest.afm;
+            const mVS = getMVS(dataSet);
+            const type = 'bar';
+            const seriesWithoutDrillability = getSeries(
+                dataSet.executionResult.data,
+                ...mVS,
+                type,
+                DEFAULT_COLOR_PALETTE
+            );
+
+            describe('with all drillable measures', () => {
+                const drillableMeasures = [{
+                    uri: dataSet.executionRequest.afm.attributes[0].displayForm.uri
+                }];
+                const drillableMeasuresSeriesData = getDrillableSeries(
+                    seriesWithoutDrillability,
+                    drillableMeasures,
+                    ...mVS,
+                    type,
+                    afm
+                );
+
+                it('should assign correct drillContext to pointData with drilldown true', () => {
+                    const startYear = parseInt( // should be 2008
+                        drillableMeasuresSeriesData[0].data[0].drillContext[1].value, 10
+                    );
+                    drillableMeasuresSeriesData.forEach((seriesItem) => {
+                        seriesItem.data.forEach((point, index) => {
+                            expect(point.drillContext[1].value - index).toEqual(startYear);
+                        });
+                    });
+                });
+            });
+        });
+
         describe('in usecase of bar chart with 3 measures and view by attribute', () => {
             const dataSet = fixtures.barChartWith3MetricsAndViewByAttribute;
             const afm = dataSet.executionRequest.afm;
