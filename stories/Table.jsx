@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { range } from 'lodash';
+import { range, cloneDeep } from 'lodash';
 import { screenshotWrap } from '@gooddata/test-storybook';
 
 import TableTransformation from '../src/Table/TableTransformation';
@@ -223,13 +223,15 @@ storiesOf('Table', module)
     .add('Totals edit mode', () => {
         let tableRef;
         const totals = generateTotals(['avg', 'nat', 'sum']);
-
+        const response = cloneDeep(EXECUTION_RESPONSE_2A_3M);
+        // set formatting of third metric - for null display "unknown"
+        response.dimensions[1].headers[0].measureGroupHeader.items[2].measureHeaderItem.format = '[=null][magenta]unknown';
         return screenshotWrap(
             <IntlWrapper>
                 <TableTransformation
                     ref={(ref) => { tableRef = ref; }}
                     executionRequest={EXECUTION_REQUEST_2A_3M}
-                    executionResponse={EXECUTION_RESPONSE_2A_3M}
+                    executionResponse={response}
                     executionResult={EXECUTION_RESULT_2A_3M}
                     height={400}
                     onSortChange={action('Sort changed')}

@@ -1,5 +1,6 @@
 import { cloneDeep, invoke, get, set, isEmpty } from 'lodash';
 import { chartClick } from '../../utils/drilldownEventing';
+import styleVariables from '../../styles/variables';
 
 const isTouchDevice = 'ontouchstart' in window || navigator.msMaxTouchPoints;
 
@@ -27,14 +28,14 @@ const BASE_TEMPLATE = {
         gridLineColor: '#ebebeb',
         labels: {
             style: {
-                color: '#94a1ad',
+                color: styleVariables.gdColorStateBlank,
                 font: '12px Avenir, "Helvetica Neue", Arial, sans-serif'
             }
         },
         title: {
             margin: 15,
             style: {
-                color: '#6D7680',
+                color: styleVariables.gdColorLink,
                 font: '14px Avenir, "Helvetica Neue", Arial, sans-serif'
             }
         }
@@ -51,7 +52,7 @@ const BASE_TEMPLATE = {
 
         labels: {
             style: {
-                color: '#94a1ad',
+                color: styleVariables.gdColorStateBlank,
                 font: '12px Avenir, "Helvetica Neue", Arial, sans-serif'
             },
             autoRotation: [-90]
@@ -59,7 +60,7 @@ const BASE_TEMPLATE = {
         title: {
             margin: 10,
             style: {
-                color: '#6D7680',
+                color: styleVariables.gdColorLink,
                 font: '14px Avenir, "Helvetica Neue", Arial, sans-serif'
             }
         }
@@ -69,7 +70,7 @@ const BASE_TEMPLATE = {
             textDecoration: 'none'
         },
         activeAxisLabelStyle: {
-            color: '#464e56',
+            color: styleVariables.gdColorText,
             textDecoration: 'none'
         },
         drillUpButton: {

@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { colors2Object, numberFormat } from '@gooddata/numberjs';
+import styleVariables from '../../styles/variables';
 
 import { ALIGN_LEFT, ALIGN_RIGHT } from '../constants/align';
 
@@ -17,15 +18,27 @@ export function getCellClassNames(rowIndex, columnKey, isDrillable) {
     );
 }
 
-export function getStyledLabel(header, cellContent) {
+export function getStyledLabel(header, cellContent, applyColor = true) {
     if (header.type !== 'measure') {
         return { style: {}, label: cellContent.name };
     }
 
     const numberInString = cellContent === null ? '' : parseFloat(cellContent);
     const formattedNumber = numberFormat(numberInString, header.format);
-    const { label, color } = colors2Object(formattedNumber);
-    const style = color ? { color } : {};
+    const { label: origLabel, color } = colors2Object(formattedNumber);
+
+    let style;
+    let label;
+    if (origLabel === '') {
+        label = '–';
+        style = {
+            color: styleVariables.gdColorStateBlank,
+            fontWeight: 'bold'
+        };
+    } else {
+        style = (color && applyColor) ? { color } : {};
+        label = origLabel;
+    }
 
     return { style, label };
 }
