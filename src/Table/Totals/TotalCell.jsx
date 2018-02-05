@@ -100,7 +100,7 @@ export class TotalCell extends Component {
         );
     }
 
-    renderMeasureCellContent(label, total, header, columnIndex) {
+    renderMeasureCellContent(label, style, total, header, columnIndex) {
         const { firstMeasureIndex, editAllowed } = this.props;
 
         if (header.type !== 'measure') {
@@ -110,7 +110,7 @@ export class TotalCell extends Component {
         const columnHasTotal = hasTableColumnTotalEnabled(total.outputMeasureIndexes, columnIndex, firstMeasureIndex);
 
         const labelElement = (
-            <span className={cx('s-total-column-value')} title={label}>{label}</span>
+            <span className={cx('s-total-column-value')} title={label} style={style}>{label}</span>
         );
 
         if (editAllowed) {
@@ -157,9 +157,9 @@ export class TotalCell extends Component {
         }
 
         if (isMeasureColumn) {
-            const value = total.values[measureColumnIndex] === null ? '' : total.values[measureColumnIndex];
-            const { label } = getStyledLabel(header, value);
-            return this.renderMeasureCellContent(label, total, header, columnIndex);
+            const value = total.values[measureColumnIndex];
+            const { label, style } = getStyledLabel(header, value, false);
+            return this.renderMeasureCellContent(label, style, total, header, columnIndex);
         }
 
         return '';

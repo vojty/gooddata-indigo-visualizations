@@ -35,10 +35,13 @@ describe('Table utils - Cell', () => {
             });
         });
 
-        it('should get empty string when there is no cell content', () => {
+        it('should get styled dash when the value is null', () => {
             expect(getStyledLabel(FIRST_MEASURE_HEADER, null)).toEqual({
-                style: {},
-                label: ''
+                style: {
+                    color: '#94a1ad',
+                    fontWeight: 'bold'
+                },
+                label: '–'
             });
         });
 
@@ -53,6 +56,23 @@ describe('Table utils - Cell', () => {
             expect(getStyledLabel(SECOND_MEASURE_HEADER, '9876543.21')).toEqual({
                 style: { color: '#FF0000' },
                 label: '$9,876,543.21'
+            });
+        });
+
+        it('should not apply color whe the argument applyColor is false', () => {
+            expect(getStyledLabel(SECOND_MEASURE_HEADER, '9876543.21', false)).toEqual({
+                style: {},
+                label: '$9,876,543.21'
+            });
+        });
+
+        it('should get styled dash when the value is null even if the param applyColor is false', () => {
+            expect(getStyledLabel(FIRST_MEASURE_HEADER, null, false)).toEqual({
+                style: {
+                    color: '#94a1ad',
+                    fontWeight: 'bold'
+                },
+                label: '–'
             });
         });
     });

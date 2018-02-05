@@ -324,7 +324,7 @@ describe('Table utils - Data transformation', () => {
                 { id: '71', name: 'East Coast' },
                 '1953605.55',
                 '2115472',
-                '285287.96'
+                null
             ]);
         });
     });
