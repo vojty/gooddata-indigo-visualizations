@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import ChartTransformation from '../ChartTransformation';
 import * as fixtures from '../../../stories/test_data/fixtures';
-import { RIGHT } from '../Legend/PositionTypes';
+import { RIGHT } from '../legend/PositionTypes';
 import HighChartRenderer from '../HighChartRenderer';
 
 describe('ChartTransformation', () => {

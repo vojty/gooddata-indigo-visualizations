@@ -2,7 +2,7 @@ import invariant from 'invariant';
 import { get, has, isObject, omit, zip, isEmpty } from 'lodash';
 import { getAttributeElementIdFromAttributeElementUri } from '../../utils/common';
 import { getMeasureUriOrIdentifier } from '../../utils/drilldownEventing';
-import { getTotalsTypesList } from '../Totals/utils';
+import { getTotalsTypesList } from '../totals/utils';
 
 function getAttributeHeaders(attributeDimension) {
     return attributeDimension.headers

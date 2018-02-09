@@ -16,7 +16,7 @@ import { subscribeEvents } from '../utils/common';
 import { getCellClassNames, getColumnAlign, getStyledLabel } from './utils/cell';
 import { getBackwardCompatibleHeaderForDrilling, getBackwardCompatibleRowForDrilling } from './utils/dataTransformation';
 import { cellClick, isDrillable } from '../utils/drilldownEventing';
-import RemoveRows from './Totals/RemoveRows';
+import RemoveRows from './totals/RemoveRows';
 import { createSortItem, getHeaderSortClassName, getNextSortDir } from './utils/sort';
 import { getFooterHeight, getFooterPositions, isFooterAtDefaultPosition, isFooterAtEdgePosition } from './utils/footer';
 import { updatePosition } from './utils/row';
@@ -37,8 +37,8 @@ import {
     getFirstMeasureIndex,
     getTotalsDefinition,
     shouldShowTotals
-} from './Totals/utils';
-import TotalCell from './Totals/TotalCell';
+} from './totals/utils';
+import TotalCell from './totals/TotalCell';
 import { TotalsWithDataPropTypes } from '../proptypes/totals';
 
 const FULLSCREEN_TOOLTIP_VIEWPORT_THRESHOLD = 480;

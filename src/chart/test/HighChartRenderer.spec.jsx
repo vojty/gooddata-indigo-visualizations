@@ -4,8 +4,8 @@ import { shallow, mount } from 'enzyme';
 import HighChartRenderer from '../HighChartRenderer';
 import { getHighchartsOptions } from '../highChartsCreators';
 import Chart from '../Chart';
-import Legend from '../Legend/Legend';
-import { TOP, BOTTOM, LEFT, RIGHT } from '../Legend/PositionTypes';
+import Legend from '../legend/Legend';
+import { TOP, BOTTOM, LEFT, RIGHT } from '../legend/PositionTypes';
 import { BAR_CHART } from '../../VisualizationTypes';
 
 function createComponent(customProps = {}) {

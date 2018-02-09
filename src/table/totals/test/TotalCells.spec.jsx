@@ -2,8 +2,8 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import { withIntl } from '../../../test/utils';
-import AddTotal from '../../Totals/AddTotal';
-import RemoveRows from '../../Totals/RemoveRows';
+import AddTotal from '../AddTotal';
+import RemoveRows from '../RemoveRows';
 import TotalCells from '../TotalCell';
 
 const WrappedTotalCells = withIntl(TotalCells);

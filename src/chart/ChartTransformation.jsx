@@ -5,7 +5,7 @@ import invariant from 'invariant';
 import { ExecutionRequestPropTypes, ExecutionResponsePropTypes, ExecutionResultPropTypes } from './../proptypes/execution';
 import { getChartOptions, validateData } from './chartOptionsBuilder';
 import { getHighchartsOptions } from './highChartsCreators';
-import getLegend from './Legend/legendBuilder';
+import getLegend from './legend/legendBuilder';
 import HighChartRenderer from './HighChartRenderer';
 import DrillableItem from '../proptypes/DrillableItem';
 
