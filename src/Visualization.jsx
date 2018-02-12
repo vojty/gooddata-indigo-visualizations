@@ -4,8 +4,8 @@ import invariant from 'invariant';
 import { isEqual, isFunction, omitBy } from 'lodash';
 import Highcharts from 'highcharts';
 
-import ChartTransformation from './Chart/ChartTransformation';
-import TableTransformation from './Table/TableTransformation';
+import ChartTransformation from './chart/ChartTransformation';
+import TableTransformation from './table/TableTransformation';
 import * as VisualizationTypes from './VisualizationTypes';
 
 export default class Visualization extends Component {

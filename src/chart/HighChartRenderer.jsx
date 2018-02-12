@@ -7,9 +7,9 @@ import cx from 'classnames';
 
 import { PIE_CHART } from '../VisualizationTypes';
 import Chart from './Chart';
-import Legend from './Legend/Legend';
+import Legend from './legend/Legend';
 import { initChartPlugins } from './highcharts/chartPlugins';
-import { TOP, LEFT, BOTTOM, RIGHT } from './Legend/PositionTypes';
+import { TOP, LEFT, BOTTOM, RIGHT } from './legend/PositionTypes';
 
 const CHART_TEXT_PADDING = 50;
 

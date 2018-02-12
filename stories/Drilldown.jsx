@@ -6,7 +6,7 @@ import { screenshotWrap } from '@gooddata/test-storybook';
 import Visualization from '../src/Visualization';
 import { wrap } from './utils/wrap';
 import * as fixtures from './test_data/fixtures';
-import { VIEW_BY_DIMENSION_INDEX, STACK_BY_DIMENSION_INDEX } from '../src/Chart/constants';
+import { VIEW_BY_DIMENSION_INDEX, STACK_BY_DIMENSION_INDEX } from '../src/chart/constants';
 
 import '../src/styles/charts.scss';
 import '../src/styles/table.scss';
@@ -15,7 +15,7 @@ import {
     EXECUTION_RESPONSE_POP,
     EXECUTION_RESULT_POP,
     TABLE_HEADERS_POP
-} from '../src/Table/fixtures/periodOverPeriod';
+} from '../src/table/fixtures/periodOverPeriod';
 
 const eventAction = decorateAction([
     (...args) => {

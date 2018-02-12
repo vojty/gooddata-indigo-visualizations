@@ -4,8 +4,8 @@ import { action } from '@storybook/addon-actions';
 import { range, cloneDeep } from 'lodash';
 import { screenshotWrap } from '@gooddata/test-storybook';
 
-import TableTransformation from '../src/Table/TableTransformation';
-import ResponsiveTable from '../src/Table/ResponsiveTable';
+import TableTransformation from '../src/table/TableTransformation';
+import ResponsiveTable from '../src/table/ResponsiveTable';
 import IntlWrapper from './utils/IntlWrapper';
 import '../src/styles/table.scss';
 
@@ -13,11 +13,11 @@ import {
     EXECUTION_REQUEST_2A_1M,
     EXECUTION_RESPONSE_2A_1M,
     EXECUTION_RESULT_2A_1M
-} from '../src/Table/fixtures/2attributes1measure';
+} from '../src/table/fixtures/2attributes1measure';
 import {
     EXECUTION_REQUEST_2A_3M, EXECUTION_RESPONSE_2A_3M,
     EXECUTION_RESULT_2A_3M
-} from '../src/Table/fixtures/2attributes3measures';
+} from '../src/table/fixtures/2attributes3measures';
 
 function generateExecutionRequest() {
     // no needed exact executionRequest for these storybook usages where is no sorting

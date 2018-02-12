@@ -8,9 +8,9 @@ import { withIntl, wrapWithIntl } from '../../test/utils';
 import { ASC, DESC } from '../constants/sort';
 import { EXECUTION_REQUEST_1A_2M, TABLE_HEADERS_1A_2M, TABLE_ROWS_1A_2M } from '../fixtures/1attribute2measures';
 import { EXECUTION_REQUEST_2M, TABLE_HEADERS_2M, TABLE_ROWS_2M } from '../fixtures/2measures';
-import RemoveRows from '../Totals/RemoveRows';
+import RemoveRows from '../totals/RemoveRows';
 import { EXECUTION_REQUEST_2A_3M, TABLE_HEADERS_2A_3M, TABLE_ROWS_2A_3M } from '../fixtures/2attributes3measures';
-import { TotalCell } from '../Totals/TotalCell';
+import { TotalCell } from '../totals/TotalCell';
 
 function getInstanceFromWrapper(wrapper, component) {
     return wrapper.find(component).childAt(0).instance();

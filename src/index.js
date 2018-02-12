@@ -1,10 +1,10 @@
 import Visualization from './Visualization';
 
-import ChartTransformation from './Chart/ChartTransformation';
-import TableTransformation from './Table/TableTransformation';
+import ChartTransformation from './chart/ChartTransformation';
+import TableTransformation from './table/TableTransformation';
 
-import ResponsiveTable from './Table/ResponsiveTable';
-import Table from './Table/Table';
+import ResponsiveTable from './table/ResponsiveTable';
+import Table from './table/Table';
 
 import {
     AfmPropTypesShape,
