@@ -76,7 +76,7 @@
     "jest": "21.0.0",
     "jest-junit": "3.0.0",
     "json-loader": "0.5.4",
-    "node-sass": "4.5.2",
+    "node-sass": "4.7.2",
     "prop-types": "15.5.10",
     "react": "15.3.2",
     "react-addons-test-utils": "15.3.2",
