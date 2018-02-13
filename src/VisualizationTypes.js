@@ -4,4 +4,5 @@ export const BAR_CHART = 'bar';
 export const LINE_CHART = 'line';
 export const PIE_CHART = 'pie';
 export const DOUGHNUT_CHART = 'doughnut';
-export const CHART_TYPES = [TABLE, COLUMN_CHART, BAR_CHART, LINE_CHART, PIE_CHART];
+export const HEADLINE = 'headline';
+export const CHART_TYPES = [TABLE, COLUMN_CHART, BAR_CHART, LINE_CHART, PIE_CHART, HEADLINE];
