@@ -8,16 +8,17 @@
   "jsnext:main": "es/index.js",
   "scripts": {
     "test": "jest --watch",
-    "debugTest": "node debug ./node_modules/.bin/jest --runInBand",
     "build": "grunt prepublish",
     "prepublish": "npm run build",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "eslint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ stories/",
-    "eslint-ci": "./node_modules/eslint/bin/eslint.js -f checkstyle -o ./ci/results/eslint-results.xml --ext .js,.jsx src/ stories/",
-    "validate": "yarn eslint && grunt stylelint",
-    "validate-ci": "yarn eslint-ci && grunt stylelint",
+    "eslint": "eslint --ext .js,.jsx src/ stories/",
+    "eslint-ci": "eslint -f checkstyle -o ./ci/results/eslint-results.xml --ext .js,.jsx src/ stories/",
+    "validate": "yarn eslint && yarn stylelint",
+    "validate-ci": "yarn eslint-ci && yarn stylelint-ci",
     "build-storybook": "build-storybook -c .storybook -o dist-storybook",
-    "test-storybook": "test-storybook"
+    "test-storybook": "test-storybook",
+    "stylelint": "stylelint 'src/styles/**/*.scss'",
+    "stylelint-ci": "stylelint 'src/styles/**/*.scss' --custom-formatter=node_modules/stylelint-checkstyle-formatter > ci/results/stylelint-results.xml"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>/jest.setup.js",
@@ -72,7 +73,6 @@
     "grunt-cli": "1.2.0",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-copy": "1.0.0",
-    "grunt-stylelint": "0.7.0",
     "jest": "21.0.0",
     "jest-junit": "3.0.0",
     "json-loader": "0.5.4",
@@ -84,7 +84,7 @@
     "sass-loader": "4.1.1",
     "style-loader": "0.13.1",
     "stylelint-checkstyle-formatter": "0.1.0",
-    "stylelint-config-gooddata": "1.0.0"
+    "stylelint-config-gooddata": "3.0.1"
   },
   "peerDependencies": {
     "react": "^15.3.2",

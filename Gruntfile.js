@@ -1,5 +1,4 @@
 // Copyright (C) 2007-2017, GoodData(R) Corporation. All rights reserved.
-const checkstyleFormatter = require('stylelint-checkstyle-formatter');
 
 const copyConfig = {
     expand: true,
@@ -18,7 +17,6 @@ module.exports = (grunt) => {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-stylelint');
 
     grunt.initConfig({
         clean: {
@@ -54,18 +52,6 @@ module.exports = (grunt) => {
                 files: [
                     Object.assign({}, copyConfig, { dest: './lib' }),
                     Object.assign({}, copyConfig, { dest: './es' })
-                ]
-            }
-        },
-
-        stylelint: {
-            all: {
-                options: {
-                    formatter: grunt.option('ci') && checkstyleFormatter,
-                    outputFile: grunt.option('ci') && 'ci/results/stylelint-results.xml'
-                },
-                src: [
-                    'src/styles/**/*.scss'
                 ]
             }
         }
