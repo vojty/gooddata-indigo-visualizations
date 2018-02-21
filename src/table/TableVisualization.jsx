@@ -93,6 +93,8 @@ export class TableVisualization extends Component {
         totalsEditAllowed: PropTypes.bool,
         onTotalsEdit: PropTypes.func,
         totalsWithData: TotalsWithDataPropTypes,
+        lastAddedTotalType: PropTypes.string,
+        onLastAddedTotalRowHighlightPeriodEnd: PropTypes.func,
         intl: intlShape.isRequired
     };
 
@@ -112,7 +114,9 @@ export class TableVisualization extends Component {
         stickyHeaderOffset: -1,
         totalsEditAllowed: false,
         onTotalsEdit: noop,
-        totalsWithData: []
+        totalsWithData: [],
+        lastAddedTotalType: '',
+        onLastAddedTotalRowHighlightPeriodEnd: noop
     };
 
     static fullscreenTooltipEnabled() {
@@ -747,9 +751,13 @@ export class TableVisualization extends Component {
             return false;
         }
 
+        const { totalsWithData, lastAddedTotalType, onLastAddedTotalRowHighlightPeriodEnd } = this.props;
+
         return (
             <RemoveRows
-                totalsWithData={this.props.totalsWithData}
+                lastAddedTotalType={lastAddedTotalType}
+                onLastAddedTotalRowHighlightPeriodEnd={onLastAddedTotalRowHighlightPeriodEnd}
+                totalsWithData={totalsWithData}
                 onRemove={this.removeTotalsRow}
                 ref={this.setTotalsRemoveComponentRef}
             />
