@@ -12,6 +12,10 @@ export class TableTransformation extends React.Component<any, any> {
 
 }
 
+export class HeadlineTransformation extends React.Component<any, any> {
+
+}
+
 export class Visualization extends React.Component<any, any> {
 
 }

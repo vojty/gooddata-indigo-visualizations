@@ -1,0 +1,54 @@
+@import '~@gooddata/goodstrap/lib/core/styles/themes/indigo/_typo-mixins';
+
+.headline {
+    text-align: center;
+    height: 100%;
+
+    &:hover .headline-primary-link,
+    &:hover .headline-primary-link .headline-primary-value--empty {
+        color: $gd-color-text;
+    }
+}
+
+.headline-primary {
+    overflow: hidden;
+    white-space: nowrap;
+
+    @extend %gd-heading-1;
+}
+
+.headline-primary-value--empty {
+    color: $gd-color-disabled;
+}
+
+.headline-primary-value {
+    line-height: 100%;
+    vertical-align: top;
+}
+
+.headline-primary-link {
+    cursor: pointer;
+    transition: color 0.4s ease-out;
+
+    .headline-primary-value--empty {
+        transition: color 0.4s ease-out;
+    }
+
+    .headline-primary-value {
+        &:not(.headline-primary-value--empty) {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 2px;
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                display: block;
+                border-bottom: 2px solid $gd-color-link;
+            }
+        }
+    }
+}
