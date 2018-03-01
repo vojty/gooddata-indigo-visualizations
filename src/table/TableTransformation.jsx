@@ -33,7 +33,9 @@ export default class TableTransformation extends Component {
         onFiredDrillEvent: PropTypes.func,
         onSortChange: PropTypes.func,
         tableRenderer: PropTypes.func,
-        width: PropTypes.number
+        width: PropTypes.number,
+        lastAddedTotalType: PropTypes.string,
+        onLastAddedTotalRowHighlightPeriodEnd: PropTypes.func
     };
 
     static defaultProps = {
@@ -48,7 +50,9 @@ export default class TableTransformation extends Component {
         onFiredDrillEvent: noop,
         onSortChange: noop,
         tableRenderer: renderDefaultTable,
-        width: undefined
+        width: undefined,
+        lastAddedTotalType: '',
+        onLastAddedTotalRowHighlightPeriodEnd: noop
     };
 
     render() {
@@ -65,7 +69,10 @@ export default class TableTransformation extends Component {
             width,
             totals,
             totalsEditAllowed,
-            onTotalsEdit
+            onTotalsEdit,
+            afterRender,
+            lastAddedTotalType,
+            onLastAddedTotalRowHighlightPeriodEnd
         } = this.props;
 
         const headers = getHeaders(executionResponse);
@@ -79,7 +86,7 @@ export default class TableTransformation extends Component {
 
         const tableProps = {
             ...pick(config, ['rowsPerPage', 'onMore', 'onLess', 'sortInTooltip', 'stickyHeaderOffset']),
-            afterRender: this.props.afterRender,
+            afterRender,
             totalsWithData,
             totalsEditAllowed,
             onTotalsEdit,
@@ -90,7 +97,9 @@ export default class TableTransformation extends Component {
             onSortChange,
             rows,
             sortBy,
-            sortDir
+            sortDir,
+            lastAddedTotalType,
+            onLastAddedTotalRowHighlightPeriodEnd
         };
 
         if (height) {

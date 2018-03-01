@@ -51,4 +51,28 @@ describe('RemoveRows', () => {
         expect(onRemove).toBeCalledWith(totalType);
         expect(onRemove.mock.calls.length).toEqual(1);
     });
+
+    it('should apply \'last-added\' classname only to the row of type same as passed in \'lastAddedTotalType\' prop', () => {
+        const component = render({ lastAddedTotalType: 'sum' });
+
+        expect(component.find('.totals-remove-row-sum.last-added').length).toEqual(1);
+
+        expect(component.find('.totals-remove-row-avg.last-added').length).toEqual(0);
+        expect(component.find('.totals-remove-row-nat.last-added').length).toEqual(0);
+    });
+
+    it('should call \'onLastAddedTotalRowHighlightPeriodEnd\' callback prop after component is rendered with highlighted row and timer runs out', () => {
+        jest.useFakeTimers();
+
+        const onLastAddedTotalRowHighlightPeriodEnd = jest.fn();
+        render({ lastAddedTotalType: 'sum', onLastAddedTotalRowHighlightPeriodEnd });
+
+        expect(onLastAddedTotalRowHighlightPeriodEnd).not.toBeCalled();
+
+        jest.runOnlyPendingTimers();
+
+        expect(onLastAddedTotalRowHighlightPeriodEnd.mock.calls.length).toEqual(1);
+
+        jest.useRealTimers();
+    });
 });

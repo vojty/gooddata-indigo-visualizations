@@ -454,6 +454,8 @@ $gdc-goodstrap-basepath: '~@gooddata/goodstrap/lib/';
         position: relative;
         width: 100%;
         height: 30px;
+        box-shadow: none;
+        transition: box-shadow 1s;
         pointer-events: none;
 
         &:hover,
@@ -461,6 +463,10 @@ $gdc-goodstrap-basepath: '~@gooddata/goodstrap/lib/';
             .indigo-totals-row-remove-button {
                 visibility: visible;
             }
+        }
+
+        &.last-added {
+            box-shadow: inset 0 0 0 1px $gd-color-highlight, 0 0 2px 1px $gd-color-highlight;
         }
 
         .indigo-totals-row-remove-button {
