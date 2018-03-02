@@ -1,37 +1,98 @@
 // (C) 2007-2018 GoodData Corporation
-import { cloneDeep, get, isEmpty } from 'lodash';
+import { cloneDeep, get, isEmpty, isNumber } from 'lodash';
 import CustomEvent from 'custom-event';
+import invariant from 'invariant';
 import { getMeasureUriOrIdentifier } from '../../utils/drilldownEventing';
 
-function mapToHeadlineItemData(measure, measureHeaderItem, value) {
+function createHeadlineDataItem(executionDataItem) {
+    if (!executionDataItem) {
+        return null;
+    }
+
     return {
-        localIdentifier: measure.localIdentifier,
-        title: measureHeaderItem.name,
-        value,
-        format: measureHeaderItem.format,
+        localIdentifier: executionDataItem.measureHeaderItem.localIdentifier,
+        title: executionDataItem.measureHeaderItem.name,
+        value: executionDataItem.value,
+        format: executionDataItem.measureHeaderItem.format,
+        isDrillable: false
+    };
+}
+
+function createTertiaryItem(executionData, intl) {
+    const secondaryHeaderItem = get(executionData, ['1', 'measureHeaderItem']);
+    if (!secondaryHeaderItem) {
+        return null;
+    }
+
+    const primaryValueString = get(executionData, ['0', 'value']);
+    const primaryValue = primaryValueString !== null ? Number(primaryValueString) : null;
+    const secondaryValueString = get(executionData, ['1', 'value']);
+    const secondaryValue = secondaryValueString !== null ? Number(secondaryValueString) : null;
+
+    const tertiaryTitle = intl.formatMessage({ id: 'visualizations.headline.tertiary.title' });
+
+    const isCountableValue = isNumber(primaryValue) && isNumber(secondaryValue);
+    const tertiaryValue = (isCountableValue && secondaryValue !== 0)
+        ? ((primaryValue - secondaryValue) / secondaryValue)
+        : null;
+
+    return {
+        localIdentifier: 'tertiaryIdentifier',
+        title: tertiaryTitle,
+        value: tertiaryValue ? String(tertiaryValue) : null,
+        format: '#,##0%',
         isDrillable: false
     };
 }
 
 /**
+ * Get tuple of measure header items with related data value by index position from executionResponse and
+ * executionResult.
+ *
+ * @param executionResponse
+ * @param executionResult
+ * @returns {any[]}
+ */
+function getExecutionData(executionResponse, executionResult) {
+    const headerItems = get(executionResponse, 'dimensions[0].headers[0].measureGroupHeader.items', []);
+
+    return headerItems.map((item, index) => {
+        const value = get(executionResult, ['data', index]);
+
+        invariant(value !== undefined, 'Undefined execution value data for headline transformation');
+        invariant(item.measureHeaderItem, 'Missing expected measureHeaderItem');
+
+        return {
+            measureHeaderItem: item.measureHeaderItem,
+            value
+        };
+    });
+}
+
+/**
  * Get {HeadlineData} used by the {Headline} component.
  *
- * @param executionRequest - Required for measure localIdentifier and definition id (uri, identifier)
- * @param executionResponse - Required for retrieving measure name and format.
- * @param executionResult - Get one dimensional array with measure values
+ * @param executionResponse - The execution response with dimensions definition.
+ * @param executionResult - The execution result with an actual data values.
+ * @param intl - Required localization for compare item title
  * @returns {*}
  */
-export function getData(executionRequest, executionResponse, executionResult) {
-    const primaryMeasure = get(executionRequest, 'afm.measures[0]');
-    const primaryValue = get(executionResult, 'data[0]');
-    const primaryMeasureHeaderItem = get(executionResponse,
-        'dimensions[0].headers[0].measureGroupHeader.items[0].measureHeaderItem');
+export function getHeadlineData(executionResponse, executionResult, intl) {
+    const executionData = getExecutionData(executionResponse, executionResult);
 
-    if (primaryMeasure === undefined || primaryValue === undefined || primaryMeasureHeaderItem === undefined) {
-        throw new Error('Value or measure or measure header for the primary item has not been found in the execution!');
-    }
+    const primaryItem = createHeadlineDataItem(executionData[0]);
+    const primaryItemProp = primaryItem ? { primaryItem } : {};
+
+    const secondaryItem = createHeadlineDataItem(executionData[1]);
+    const secondaryItemProp = secondaryItem ? { secondaryItem } : {};
+
+    const tertiaryItem = createTertiaryItem(executionData, intl);
+    const tertiaryItemProp = tertiaryItem ? { tertiaryItem } : {};
+
     return {
-        primaryItem: mapToHeadlineItemData(primaryMeasure, primaryMeasureHeaderItem, primaryValue)
+        ...primaryItemProp,
+        ...secondaryItemProp,
+        ...tertiaryItemProp
     };
 }
 
@@ -51,8 +112,11 @@ function isItemDrillable(measureLocalIdentifier, drillableItems, executionReques
         return false;
     }
     return drillableItems.some((drillableItem) => {
-        const matchByUri = measureIds.uri === drillableItem.uri;
-        const matchByIdentifier = measureIds.identifier === drillableItem.identifier;
+        // Check for defined values because undefined === undefined
+        const matchByIdentifier = drillableItem.identifier && measureIds.identifier &&
+            drillableItem.identifier === measureIds.identifier;
+        const matchByUri = drillableItem.uri && measureIds.uri && drillableItem.uri === measureIds.uri;
+
         return matchByUri || matchByIdentifier;
     });
 }
@@ -68,10 +132,14 @@ function isItemDrillable(measureLocalIdentifier, drillableItems, executionReques
  */
 export function applyDrillableItems(headlineData, drillableItems, executionRequest) {
     const data = cloneDeep(headlineData);
-    const { primaryItem } = data;
+    const { primaryItem, secondaryItem } = data;
 
     if (!isEmpty(primaryItem)) {
         primaryItem.isDrillable = isItemDrillable(primaryItem.localIdentifier, drillableItems, executionRequest);
+    }
+
+    if (!isEmpty(secondaryItem)) {
+        secondaryItem.isDrillable = isItemDrillable(secondaryItem.localIdentifier, drillableItems, executionRequest);
     }
 
     return data;
@@ -114,7 +182,6 @@ export function buildDrillEventData(itemContext, executionRequest, executionResp
                 }
             ]
         }
-
     };
 }
 

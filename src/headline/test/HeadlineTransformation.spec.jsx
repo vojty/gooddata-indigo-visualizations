@@ -14,25 +14,21 @@ import {
 import Headline from '../Headline';
 import {
     DRILL_EVENT_DATA_BY_MEASURE_IDENTIFIER,
-    DRILL_EVENT_DATA_BY_MEASURE_URI
+    DRILL_EVENT_DATA_BY_MEASURE_URI,
+    DRILL_EVENT_DATA_FOR_SECONDARY_ITEM
 } from './fixtures/drill_event_data';
+import { withIntl } from '../../test/utils';
+import {
+    TWO_MEASURES_EXECUTION_RESPONSE,
+    TWO_MEASURES_EXECUTION_RESULT,
+    TWO_MEASURES_WITH_IDENTIFIER_EXECUTION_REQUEST,
+    TWO_MEASURES_WITH_URI_EXECUTION_REQUEST
+} from './fixtures/two_measures';
 
 describe('HeadlineTransformation', () => {
-    let spyConsole;
-
-    beforeAll(() => {
-        // Headline uses 3rd party component Textfit which logs console warning about inability to compute element's
-        // height because the component is not visible. The warning is logged only during the testing. It will not be
-        // encountered in the production when the component is rendered by a real browser.
-        spyConsole = jest.spyOn(console, 'warn').mockImplementation(noop);
-    });
-
-    afterAll(() => {
-        spyConsole.mockRestore();
-    });
-
     function createComponent(props = {}) {
-        return mount(<HeadlineTransformation {...props} />);
+        const WrappedHeadlineTransformation = withIntl(HeadlineTransformation);
+        return mount(<WrappedHeadlineTransformation {...props} />);
     }
 
     it('should pass default props to Headline component', () => {
@@ -43,9 +39,6 @@ describe('HeadlineTransformation', () => {
         });
 
         const props = wrapper.find(Headline).props();
-        expect(props.config).toEqual({
-            maxFontSize: 50
-        });
         expect(props.onAfterRender).toEqual(noop);
     });
 
@@ -54,14 +47,10 @@ describe('HeadlineTransformation', () => {
         const drillableItems = [{
             uri: '/gdc/md/project_id/obj/1'
         }];
-        const config = {
-            maxFontSize: 20
-        };
         const wrapper = createComponent({
             executionRequest: SINGLE_URI_METRIC_EXECUTION_REQUEST,
             executionResponse: SINGLE_METRIC_EXECUTION_RESPONSE,
             executionResult: SINGLE_METRIC_EXECUTION_RESULT,
-            config,
             drillableItems,
             onAfterRender
         });
@@ -76,7 +65,6 @@ describe('HeadlineTransformation', () => {
                 isDrillable: true
             }
         });
-        expect(props.config).toEqual(config);
         expect(props.onAfterRender).toEqual(onAfterRender);
         expect(props.onFiredDrillEvent).toBeDefined();
     });
@@ -86,14 +74,10 @@ describe('HeadlineTransformation', () => {
         const drillableItems = [{
             identifier: 'metric.lost'
         }];
-        const config = {
-            maxFontSize: 20
-        };
         const wrapper = createComponent({
             executionRequest: SINGLE_IDENTIFIER_METRIC_EXECUTION_REQUEST,
             executionResponse: SINGLE_METRIC_EXECUTION_RESPONSE,
             executionResult: SINGLE_METRIC_EXECUTION_RESULT,
-            config,
             drillableItems,
             onAfterRender
         });
@@ -108,8 +92,80 @@ describe('HeadlineTransformation', () => {
                 isDrillable: true
             }
         });
-        expect(props.config).toEqual(config);
         expect(props.onAfterRender).toEqual(onAfterRender);
+        expect(props.onFiredDrillEvent).toBeDefined();
+    });
+
+    it('should pass primary, secondary and tertiary items to Headline component', () => {
+        const wrapper = createComponent({
+            executionRequest: TWO_MEASURES_WITH_URI_EXECUTION_REQUEST,
+            executionResponse: TWO_MEASURES_EXECUTION_RESPONSE,
+            executionResult: TWO_MEASURES_EXECUTION_RESULT
+        });
+
+        const props = wrapper.find(Headline).props();
+        expect(props.data).toEqual({
+            primaryItem: {
+                localIdentifier: 'm1',
+                title: 'Lost',
+                value: '42470571.16',
+                format: '$#,##0.00',
+                isDrillable: false
+            },
+            secondaryItem: {
+                localIdentifier: 'm2',
+                title: 'Found',
+                value: '12345678',
+                format: '$#,##0.00',
+                isDrillable: false
+            },
+            tertiaryItem: {
+                localIdentifier: 'tertiaryIdentifier',
+                title: 'Versus',
+                value: '2.4401165460495564',
+                format: '#,##0%',
+                isDrillable: false
+            }
+        });
+    });
+
+    it('should pass enabled drill eventing for primary and secondary items', () => {
+        const drillableItems = [{
+            uri: '/gdc/md/project_id/obj/1'
+        }, {
+            uri: '/gdc/md/project_id/obj/2'
+        }];
+        const wrapper = createComponent({
+            executionRequest: TWO_MEASURES_WITH_URI_EXECUTION_REQUEST,
+            executionResponse: TWO_MEASURES_EXECUTION_RESPONSE,
+            executionResult: TWO_MEASURES_EXECUTION_RESULT,
+            drillableItems
+        });
+
+        const props = wrapper.find(Headline).props();
+        expect(props.data).toEqual({
+            primaryItem: {
+                localIdentifier: 'm1',
+                title: 'Lost',
+                value: '42470571.16',
+                format: '$#,##0.00',
+                isDrillable: true
+            },
+            secondaryItem: {
+                localIdentifier: 'm2',
+                title: 'Found',
+                value: '12345678',
+                format: '$#,##0.00',
+                isDrillable: true
+            },
+            tertiaryItem: {
+                localIdentifier: 'tertiaryIdentifier',
+                title: 'Versus',
+                value: '2.4401165460495564',
+                format: '#,##0%',
+                isDrillable: false
+            }
+        });
         expect(props.onFiredDrillEvent).toBeDefined();
     });
 
@@ -125,9 +181,7 @@ describe('HeadlineTransformation', () => {
         expect(onAfterRender).toHaveBeenCalledTimes(1);
 
         wrapper.setProps({
-            config: {
-                maxFontSize: 100
-            }
+            executionRequest: SINGLE_URI_METRIC_EXECUTION_REQUEST
         });
 
         expect(onAfterRender).toHaveBeenCalledTimes(2);
@@ -149,7 +203,7 @@ describe('HeadlineTransformation', () => {
                     onFiredDrillEvent: drillEventFunction
                 });
 
-                const primaryValue = wrapper.find('.s-headline-primary-value');
+                const primaryValue = wrapper.find('.s-headline-primary-item .headline-value-wrapper');
                 const clickEvent = { target: { dispatchEvent: jest.fn() } };
                 primaryValue.simulate('click', clickEvent);
 
@@ -177,7 +231,7 @@ describe('HeadlineTransformation', () => {
                     onFiredDrillEvent: drillEventFunction
                 });
 
-                const primaryValue = wrapper.find('.s-headline-primary-value');
+                const primaryValue = wrapper.find('.s-headline-primary-item .headline-value-wrapper');
                 const clickEvent = { target: { dispatchEvent: jest.fn() } };
                 primaryValue.simulate('click', clickEvent);
 
@@ -200,7 +254,7 @@ describe('HeadlineTransformation', () => {
                     onFiredDrillEvent: drillEventFunction
                 });
 
-                const primaryValue = wrapper.find('.s-headline-primary-value');
+                const primaryValue = wrapper.find('.s-headline-primary-item .headline-value-wrapper');
                 const clickEvent = { target: { dispatchEvent: jest.fn() } };
                 primaryValue.simulate('click', clickEvent);
 
@@ -221,12 +275,42 @@ describe('HeadlineTransformation', () => {
                     onFiredDrillEvent: drillEventFunction
                 });
 
-                const primaryValue = wrapper.find('.s-headline-primary-value');
+                const primaryValue = wrapper.find('.s-headline-primary-item .headline-value-wrapper');
                 const clickEvent = { target: { dispatchEvent: jest.fn() } };
                 primaryValue.simulate('click', clickEvent);
 
                 expect(drillEventFunction).toHaveBeenCalledTimes(1);
                 expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA_BY_MEASURE_IDENTIFIER);
+            });
+        });
+        describe('for secondary value', () => {
+            it('should dispatch drill event and post message', () => {
+                const drillEventFunction = jest.fn(() => true);
+
+                const wrapper = createComponent({
+                    executionRequest: TWO_MEASURES_WITH_IDENTIFIER_EXECUTION_REQUEST,
+                    executionResponse: TWO_MEASURES_EXECUTION_RESPONSE,
+                    executionResult: TWO_MEASURES_EXECUTION_RESULT,
+                    drillableItems: [{
+                        identifier: 'measure.lost'
+                    }, {
+                        identifier: 'measure.found'
+                    }],
+                    onFiredDrillEvent: drillEventFunction
+                });
+
+                const primaryValue = wrapper.find('.s-headline-secondary-item');
+                const clickEvent = { target: { dispatchEvent: jest.fn() } };
+                primaryValue.simulate('click', clickEvent);
+
+                expect(drillEventFunction).toHaveBeenCalledTimes(1);
+                expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA_FOR_SECONDARY_ITEM);
+
+                expect(clickEvent.target.dispatchEvent).toHaveBeenCalledTimes(1);
+                const customEvent = clickEvent.target.dispatchEvent.mock.calls[0][0];
+                expect(customEvent.bubbles).toBeTruthy();
+                expect(customEvent.type).toEqual('drill');
+                expect(customEvent.detail).toEqual(DRILL_EVENT_DATA_FOR_SECONDARY_ITEM);
             });
         });
     });

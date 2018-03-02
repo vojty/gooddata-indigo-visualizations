@@ -54,3 +54,41 @@ export const DRILL_EVENT_DATA_BY_MEASURE_IDENTIFIER = {
         }]
     }
 };
+
+export const DRILL_EVENT_DATA_FOR_SECONDARY_ITEM = {
+    drillContext: {
+        element: 'secondaryValue',
+        intersection: [{
+            header: {
+                identifier: 'measure.found',
+                uri: ''
+            },
+            id: 'm2',
+            title: 'Found'
+        }],
+        type: 'headline',
+        value: '12345678'
+    },
+    executionContext: {
+        measures: [{
+            definition: {
+                measure: {
+                    item: {
+                        identifier: 'measure.lost'
+                    }
+                }
+            },
+            localIdentifier: 'm1'
+        }, {
+            definition: {
+                measure: {
+                    item: {
+                        identifier: 'measure.found'
+                    }
+                }
+            },
+            localIdentifier: 'm2'
+        }]
+    }
+};
+

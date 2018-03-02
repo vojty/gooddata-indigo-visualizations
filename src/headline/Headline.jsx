@@ -3,25 +3,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { noop } from 'lodash';
-import { Textfit } from 'react-textfit';
-import { HeadlineData, HeadlineConfig } from '../proptypes/headline';
+import ResponsiveText from './ResponsiveText';
+import { HeadlineData } from '../proptypes/headline';
 import formatItemValue from './utils/HeadlineDataItemUtils';
 
-/**
- * The React component that renders the Headline visualisation.
- */
 export default class Headline extends Component {
     static propTypes = {
-        config: HeadlineConfig,
         data: HeadlineData.isRequired,
         onFiredDrillEvent: PropTypes.func,
         onAfterRender: PropTypes.func
     };
 
     static defaultProps = {
-        config: {
-            maxFontSize: 50
-        },
         onFiredDrillEvent: noop,
         onAfterRender: noop
     };
@@ -30,6 +23,7 @@ export default class Headline extends Component {
         super(props);
 
         this.handleClickOnPrimaryItem = this.handleClickOnPrimaryItem.bind(this);
+        this.handleClickOnSecondaryItem = this.handleClickOnSecondaryItem.bind(this);
     }
 
     componentDidMount() {
@@ -38,6 +32,43 @@ export default class Headline extends Component {
 
     componentDidUpdate() {
         this.props.onAfterRender();
+    }
+
+    getDrillableClasses(isDrillable) {
+        return isDrillable
+            ? [
+                'is-drillable',
+                's-is-drillable'
+            ]
+            : [];
+    }
+
+    getPrimaryItemClasses(primaryItem) {
+        return classNames([
+            'headline-primary-item',
+            's-headline-primary-item',
+            ...this.getDrillableClasses(primaryItem.isDrillable)
+        ]);
+    }
+
+    getSecondaryItemClasses(secondaryItem) {
+        return classNames([
+            'gd-flex-item',
+            'headline-compare-section-item',
+            'headline-secondary-item',
+            's-headline-secondary-item',
+            ...this.getDrillableClasses(secondaryItem.isDrillable)
+        ]);
+    }
+
+    getValueWrapperClasses(formattedItem) {
+        return classNames([
+            'headline-value-wrapper',
+            's-headline-value-wrapper'
+        ], {
+            'headline-value--empty': formattedItem.isValueEmpty,
+            's-headline-value--empty': formattedItem.isValueEmpty
+        });
     }
 
     fireDrillEvent(item, elementName, elementTarget) {
@@ -60,52 +91,126 @@ export default class Headline extends Component {
         this.fireDrillEvent(primaryItem, 'primaryValue', event.target);
     }
 
-    renderPrimaryItemAsValue(primaryItem) {
-        const { value, isValueEmpty } = formatItemValue(primaryItem);
+    handleClickOnSecondaryItem(event) {
+        const { data: { secondaryItem } } = this.props;
 
+        this.fireDrillEvent(secondaryItem, 'secondaryValue', event.target);
+    }
+
+    renderTertiaryItem() {
+        const { data: { tertiaryItem } } = this.props;
+        const formattedItem = formatItemValue(tertiaryItem);
+
+        return (
+            <div className="gd-flex-item headline-compare-section-item headline-tertiary-item s-headline-tertiary-item">
+                <div className={this.getValueWrapperClasses(formattedItem)}>
+                    {formattedItem.value}
+                </div>
+                <div className="headline-title-wrapper s-headline-title-wrapper">
+                    {tertiaryItem.title}
+                </div>
+            </div>
+        );
+    }
+
+    renderSecondaryItem() {
+        const { data: { secondaryItem } } = this.props;
+
+        const formattedItem = formatItemValue(secondaryItem);
+        const valueClickCallback = secondaryItem.isDrillable ? this.handleClickOnSecondaryItem : null;
+
+        const secondaryValue = secondaryItem.isDrillable
+            ? this.renderHeadlineItemAsLink(formattedItem)
+            : this.renderHeadlineItemAsValue(formattedItem);
+
+        return (
+            <div
+                className={this.getSecondaryItemClasses(secondaryItem)}
+                onClick={valueClickCallback}
+                style={formattedItem.cssStyle}
+            >
+                <div className="headline-value-wrapper s-headline-value-wrapper">
+                    <ResponsiveText>
+                        {secondaryValue}
+                    </ResponsiveText>
+                </div>
+                <div className="headline-title-wrapper s-headline-title-wrapper">
+                    {secondaryItem.title}
+                </div>
+            </div>
+        );
+    }
+
+    renderCompareItems() {
+        const { data: { secondaryItem } } = this.props;
+
+        if (!secondaryItem) {
+            return null;
+        }
+
+        return (
+            <div className="gd-flex-container headline-compare-section">
+                {this.renderTertiaryItem()}
+                {this.renderSecondaryItem()}
+            </div>
+        );
+    }
+
+    renderHeadlineItem(item, formattedItem) {
+        return item.isDrillable
+            ? this.renderHeadlineItemAsLink(formattedItem)
+            : this.renderHeadlineItemAsValue(formattedItem);
+    }
+
+    renderHeadlineItemAsValue(formattedItem) {
         const valueClassNames = classNames([
-            'headline-primary-value',
-            's-headline-primary-value'
+            'headline-value',
+            's-headline-value'
         ], {
-            'headline-primary-value--empty': isValueEmpty,
-            's-headline-primary-value--empty': isValueEmpty
+            'headline-value--empty': formattedItem.isValueEmpty,
+            's-headline-value--empty': formattedItem.isValueEmpty
         });
 
         return (
             <div className={valueClassNames}>
-                {value}
+                {formattedItem.value}
             </div>
         );
     }
 
-    renderPrimaryItemAsLink(primaryItem) {
+    renderHeadlineItemAsLink(formattedItem, itemType) {
+        return (
+            <div className="headline-item-link s-headline-item-link">
+                {this.renderHeadlineItemAsValue(formattedItem, itemType)}
+            </div>
+        );
+    }
+
+    renderPrimaryItem() {
+        const { data: { primaryItem } } = this.props;
+        const formattedItem = formatItemValue(primaryItem);
+
+        const valueClickCallback = primaryItem.isDrillable ? this.handleClickOnPrimaryItem : null;
+
         return (
             <div
-                className="headline-primary-link s-headline-primary-link-clickable"
-                onClick={this.handleClickOnPrimaryItem}
+                className={this.getPrimaryItemClasses(primaryItem)}
+                style={formattedItem.cssStyle}
             >
-                {this.renderPrimaryItemAsValue(primaryItem)}
+                <ResponsiveText>
+                    <div className="headline-value-wrapper" onClick={valueClickCallback}>
+                        {this.renderHeadlineItem(primaryItem, formattedItem)}
+                    </div>
+                </ResponsiveText>
             </div>
         );
-    }
-
-    renderPrimaryItem(primaryItem) {
-        return primaryItem.isDrillable
-            ? this.renderPrimaryItemAsLink(primaryItem)
-            : this.renderPrimaryItemAsValue(primaryItem);
     }
 
     render() {
-        const { data: { primaryItem } } = this.props;
-        const { cssStyle } = formatItemValue(primaryItem);
-
         return (
             <div className="headline">
-                <div className="headline-primary s-headline-primary" style={cssStyle}>
-                    <Textfit mode="single" max={this.props.config.maxFontSize}>
-                        {this.renderPrimaryItem(primaryItem)}
-                    </Textfit>
-                </div>
+                {this.renderPrimaryItem()}
+                {this.renderCompareItems()}
             </div>
         );
     }

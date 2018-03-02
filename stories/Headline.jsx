@@ -8,64 +8,51 @@ import { wrap } from './utils/wrap';
 
 import '../src/styles/headline.scss';
 import HeadlineTransformation from '../src/headline/HeadlineTransformation';
-import {
-    SINGLE_URI_METRIC_EXECUTION_REQUEST,
-    SINGLE_METRIC_EXECUTION_RESPONSE,
-    SINGLE_METRIC_EXECUTION_RESULT
-} from '../src/headline/test/fixtures/one_measure';
+import * as fixtures from './test_data/fixtures';
 
-storiesOf('Headline components/Headline', module)
-    .add('Simple', () =>
+storiesOf('Headline components / Headline ', module)
+    .add('One measure', () =>
         screenshotWrap(
             wrap(
                 <Headline
                     data={{
                         primaryItem: {
-                            uri: 'myId',
+                            localIdentifier: 'm1',
                             value: '42225.01',
                             title: 'Sum of Clicks'
                         }
                     }}
                     onAfterRender={action('onAfterRender')}
                 />,
-                100, 250)
+                'auto', 300)
         )
     )
-    .add('Formatted', () =>
+    .add('Two measures', () =>
         screenshotWrap(
             wrap(
                 <Headline
                     data={{
                         primaryItem: {
-                            uri: 'myId',
-                            value: '666429.405',
-                            format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00 group',
-                            title: 'Yearly Earnings',
-                            isDrillable: false
+                            localIdentifier: 'm1',
+                            value: '42225.01',
+                            title: 'Sum of Clicks'
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
+                            value: '32225.01',
+                            title: 'Sum of Taps'
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: '0.9',
+                            title: 'Versus',
+                            format: '#,##0%'
                         }
+
                     }}
                     onAfterRender={action('onAfterRender')}
                 />,
-                100, 700)
-        )
-    )
-    .add('Formatted with drilling', () =>
-        screenshotWrap(
-            wrap(
-                <Headline
-                    data={{
-                        primaryItem: {
-                            localIdentifier: 'myId',
-                            value: '6664.405',
-                            format: '[color=9c46b5] $#,##0.00 group',
-                            title: 'Yearly Earnings',
-                            isDrillable: true
-                        }
-                    }}
-                    onAfterRender={action('onAfterRender')}
-                    onFiredDrillEvent={action('onFiredDrillEvent')}
-                />,
-                100, 700)
+                'auto', 300)
         )
     )
     .add('Invalid value - default formatting', () =>
@@ -74,14 +61,26 @@ storiesOf('Headline components/Headline', module)
                 <Headline
                     data={{
                         primaryItem: {
-                            uri: 'myId',
+                            localIdentifier: 'm1',
                             value: 'invalid-value',
                             title: 'Sum of Clicks'
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
+                            value: 'invalid-value',
+                            title: 'Sum of Taps',
+                            format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00 group'
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: 'invalid-value',
+                            title: 'Versus',
+                            format: '#,##0%'
                         }
                     }}
                     onAfterRender={action('onAfterRender')}
                 />,
-                100, 250)
+                'auto', 300)
         )
     )
     .add('Invalid value - custom formatting', () =>
@@ -90,69 +89,244 @@ storiesOf('Headline components/Headline', module)
                 <Headline
                     data={{
                         primaryItem: {
-                            uri: 'myId',
+                            localIdentifier: 'm1',
                             value: null,
                             title: 'Sum of Clicks',
                             format: '[=null]EMPTY'
-                        }
-                    }}
-                    onAfterRender={action('onAfterRender')}
-                />,
-                100, 250)
-        )
-    )
-    .add('Drillable primary value', () =>
-        screenshotWrap(
-            wrap(
-                <Headline
-                    data={{
-                        primaryItem: {
-                            uri: 'myId',
-                            value: '53336',
-                            title: 'Sum of Clicks',
-                            isDrillable: true
-                        }
-                    }}
-                    onAfterRender={action('onAfterRender')}
-                    onFiredDrillEvent={action('onFiredDrillEvent')}
-                />,
-                100, 250)
-        )
-    )
-    .add('Drillable primary invalid value', () =>
-        screenshotWrap(
-            wrap(
-                <Headline
-                    data={{
-                        primaryItem: {
-                            uri: 'myId',
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
                             value: null,
-                            title: 'Sum of Clicks',
-                            isDrillable: true
+                            title: 'Sum of Taps',
+                            format: '[=null]EMPTY'
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: null,
+                            title: 'Versus',
+                            format: '#,##0%'
                         }
                     }}
                     onAfterRender={action('onAfterRender')}
-                    onFiredDrillEvent={action('onFiredDrillEvent')}
                 />,
-                100, 250)
+                'auto', 300)
+        )
+    )
+    .add('Formatted', () =>
+        screenshotWrap(
+            wrap(
+                <Headline
+                    data={{
+                        primaryItem: {
+                            localIdentifier: 'm1',
+                            value: '666429.405',
+                            format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00 group',
+                            title: 'Yearly Earnings',
+                            isDrillable: false
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
+                            value: '32225.01',
+                            title: 'Sum of Taps',
+                            format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00 group'
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: '0.9',
+                            title: 'Versus',
+                            format: '#,##0%'
+                        }
+                    }}
+                    onAfterRender={action('onAfterRender')}
+                />,
+                'auto', 475)
         )
     );
 
-storiesOf('Headline components/HeadlineTransformation', module)
+storiesOf('Headline components / Headline / Drilldown eventing', module)
+    .add('One measure', () =>
+        screenshotWrap(
+            wrap(
+                <Headline
+                    data={{
+                        primaryItem: {
+                            localIdentifier: 'm1',
+                            value: '53336',
+                            format: '#,##0.00',
+                            title: 'Sum of Clicks',
+                            isDrillable: true
+                        }
+                    }}
+                    onAfterRender={action('onAfterRender')}
+                    onFiredDrillEvent={action('onFiredDrillEvent')}
+                />,
+                'auto', 300)
+        )
+    )
+    .add('Two measures', () =>
+        screenshotWrap(
+            wrap(
+                <Headline
+                    data={{
+                        primaryItem: {
+                            localIdentifier: 'm1',
+                            value: '42225.01',
+                            title: 'Sum of Clicks',
+                            isDrillable: true
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
+                            value: '32225.01',
+                            title: 'Sum of Taps',
+                            isDrillable: true
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: '0.9',
+                            title: 'Versus',
+                            format: '#,##0%'
+                        }
+
+                    }}
+                    onAfterRender={action('onAfterRender')}
+                    onFiredDrillEvent={action('onFiredDrillEvent')}
+                />,
+                'auto', 300)
+        )
+    )
+    .add('Two measures - custom formatting', () =>
+        screenshotWrap(
+            wrap(
+                <Headline
+                    data={{
+                        primaryItem: {
+                            localIdentifier: 'm1',
+                            value: '42225.01',
+                            title: 'Sum of Clicks',
+                            format: '[color=9c46b5]$#,##0.00 group',
+                            isDrillable: true
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
+                            value: '32225.01',
+                            title: 'Sum of Taps',
+                            format: '[color=9c46b5]$#,##0.00 group',
+                            isDrillable: true
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: '0.9',
+                            title: 'Versus',
+                            format: '#,##0%'
+                        }
+
+                    }}
+                    onAfterRender={action('onAfterRender')}
+                    onFiredDrillEvent={action('onFiredDrillEvent')}
+                />,
+                'auto', 300)
+        )
+    )
+    .add('Invalid values', () =>
+        screenshotWrap(
+            wrap(
+                <Headline
+                    data={{
+                        primaryItem: {
+                            localIdentifier: 'm1',
+                            value: null,
+                            title: 'Sum of Clicks',
+                            isDrillable: true
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
+                            value: null,
+                            title: 'Sum of Taps',
+                            isDrillable: true
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: null,
+                            title: 'Versus',
+                            format: '#,##0%'
+                        }
+
+                    }}
+                    onAfterRender={action('onAfterRender')}
+                    onFiredDrillEvent={action('onFiredDrillEvent')}
+                />,
+                'auto', 300)
+        )
+    )
+    .add('Invalid values - Custom formatting', () =>
+        screenshotWrap(
+            wrap(
+                <Headline
+                    data={{
+                        primaryItem: {
+                            localIdentifier: 'm1',
+                            value: null,
+                            format: '[=null]EMPTY',
+                            title: 'Sum of Clicks',
+                            isDrillable: true
+                        },
+                        secondaryItem: {
+                            localIdentifier: 'm2',
+                            value: null,
+                            format: '[=null]EMPTY',
+                            title: 'Sum of Taps',
+                            isDrillable: true
+                        },
+                        tertiaryItem: {
+                            localIdentifier: 'tertiaryIdentifier',
+                            value: null,
+                            title: 'Versus',
+                            format: '#,##0%'
+                        }
+
+                    }}
+                    onAfterRender={action('onAfterRender')}
+                    onFiredDrillEvent={action('onFiredDrillEvent')}
+                />,
+                'auto', 300)
+        )
+    );
+
+storiesOf('Headline components / HeadlineTransformation', module)
     .add('Drillable primary value', () =>
         screenshotWrap(
             wrap(
                 <HeadlineTransformation
-                    executionRequest={SINGLE_URI_METRIC_EXECUTION_REQUEST}
-                    executionResponse={SINGLE_METRIC_EXECUTION_RESPONSE}
-                    executionResult={SINGLE_METRIC_EXECUTION_RESULT}
+                    executionRequest={fixtures.headlineWithOneMeasure.executionRequest}
+                    executionResponse={fixtures.headlineWithOneMeasure.executionResponse}
+                    executionResult={fixtures.headlineWithOneMeasure.executionResult}
                     drillableItems={[{
-                        identifier: 'metric.lost',
-                        uri: '/gdc/md/project_id/obj/1'
+                        identifier: 'af2Ewj9Re2vK',
+                        uri: '/gdc/md/d20eyb3wfs0xe5l0lfscdnrnyhq1t42q/obj/1283'
                     }]}
                     onFiredDrillEvent={action('onFiredDrillEvent')}
                     onAfterRender={action('onAfterRender')}
                 />,
-                100, 350)
+                'auto', 300)
+        )
+    )
+    .add('Drillable secondary value', () =>
+        screenshotWrap(
+            wrap(
+                <HeadlineTransformation
+                    executionRequest={fixtures.headlineWithTwoMeasures.executionRequest}
+                    executionResponse={fixtures.headlineWithTwoMeasures.executionResponse}
+                    executionResult={fixtures.headlineWithTwoMeasures.executionResult}
+                    drillableItems={[{
+                        identifier: 'af2Ewj9Re2vK',
+                        uri: '/gdc/md/d20eyb3wfs0xe5l0lfscdnrnyhq1t42q/obj/1283'
+                    }, {
+                        identifier: 'afSEwRwdbMeQ',
+                        uri: '/gdc/md/d20eyb3wfs0xe5l0lfscdnrnyhq1t42q/obj/1284'
+                    }]}
+                    onFiredDrillEvent={action('onFiredDrillEvent')}
+                    onAfterRender={action('onAfterRender')}
+                />,
+                'auto', 300)
         )
     );
