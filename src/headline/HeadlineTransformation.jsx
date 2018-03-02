@@ -59,6 +59,7 @@ export default class HeadlineTransformation extends Component {
 
     render() {
         const {
+            executionRequest,
             executionResponse,
             executionResult,
             drillableItems,
@@ -66,8 +67,8 @@ export default class HeadlineTransformation extends Component {
             onAfterRender
         } = this.props;
 
-        const data = getData(executionResponse, executionResult);
-        const dataWithUpdatedDrilling = applyDrillableItems(data, drillableItems, executionResponse);
+        const data = getData(executionRequest, executionResponse, executionResult);
+        const dataWithUpdatedDrilling = applyDrillableItems(data, drillableItems, executionRequest);
 
         return (
             <Headline

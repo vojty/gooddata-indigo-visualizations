@@ -27,7 +27,7 @@ describe('Headline', () => {
             onAfterRender,
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '42'
                 }
@@ -39,7 +39,7 @@ describe('Headline', () => {
         wrapper.setProps({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '43'
                 }
@@ -55,7 +55,7 @@ describe('Headline', () => {
             onFiredDrillEvent,
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '42'
                 }
@@ -74,7 +74,7 @@ describe('Headline', () => {
             onFiredDrillEvent,
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '42',
                     isDrillable: true
@@ -86,7 +86,7 @@ describe('Headline', () => {
         primaryValue.simulate('click', { target: 'elementTarget' });
 
         expect(onFiredDrillEvent).toBeCalledWith({
-            uri: '/gdc/md/project_id/obj/1',
+            localIdentifier: 'm1',
             value: '42',
             element: 'primaryValue'
         }, 'elementTarget');
@@ -98,7 +98,7 @@ describe('Headline', () => {
             onFiredDrillEvent,
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: null,
                     isDrillable: true
@@ -116,7 +116,7 @@ describe('Headline', () => {
 
         expect(onFiredDrillEvent).toHaveBeenCalledTimes(1);
         expect(onFiredDrillEvent).toBeCalledWith({
-            uri: '/gdc/md/project_id/obj/1',
+            localIdentifier: 'm1',
             value: null,
             element: 'primaryValue'
         }, 'elementTarget');
@@ -126,7 +126,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: ''
                 }
@@ -142,7 +142,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: null
                 }
@@ -158,7 +158,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: null,
                     format: '[=null]EMPTY'
@@ -175,7 +175,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: undefined
                 }
@@ -191,7 +191,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: 'xyz'
                 }
@@ -207,7 +207,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '1234567890'
                 }
@@ -223,7 +223,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '-12345678'
                 }
@@ -239,7 +239,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '1666.105',
                     format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00'
@@ -259,7 +259,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: '42'
                 }
@@ -277,7 +277,7 @@ describe('Headline', () => {
         const wrapper = createComponent({
             data: {
                 primaryItem: {
-                    uri: '/gdc/md/project_id/obj/1',
+                    localIdentifier: 'm1',
                     title: 'Some metric',
                     value: 'invalid-value'
                 }

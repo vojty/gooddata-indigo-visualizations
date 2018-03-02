@@ -44,7 +44,7 @@ export default class Headline extends Component {
 
         if (onFiredDrillEvent) {
             const itemContext = {
-                uri: item.uri,
+                localIdentifier: item.localIdentifier,
                 value: item.value,
                 element: elementName
             };
