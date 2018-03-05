@@ -5,7 +5,7 @@ export const HeadlineConfig = PropTypes.shape({
 });
 
 const HeadlineDataItem = PropTypes.shape({
-    uri: PropTypes.string.isRequired,
+    localIdentifier: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     value: PropTypes.string,
     format: PropTypes.string,

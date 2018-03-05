@@ -5,10 +5,16 @@ import HeadlineTransformation from '../HeadlineTransformation';
 import {
     SINGLE_URI_METRIC_EXECUTION_REQUEST,
     SINGLE_METRIC_EXECUTION_RESPONSE,
-    SINGLE_METRIC_EXECUTION_RESULT, SINGLE_IDENTIFIER_METRIC_EXECUTION_REQUEST
+    SINGLE_METRIC_EXECUTION_RESULT,
+    SINGLE_IDENTIFIER_METRIC_EXECUTION_REQUEST,
+    SINGLE_ADHOC_METRIC_EXECUTION_RESPONSE,
+    SINGLE_ADHOC_METRIC_EXECUTION_RESULT
 } from './fixtures/one_measure';
 import Headline from '../Headline';
-import { DRILL_EVENT_DATA } from './fixtures/drill_event_data';
+import {
+    DRILL_EVENT_DATA_BY_MEASURE_IDENTIFIER,
+    DRILL_EVENT_DATA_BY_MEASURE_URI
+} from './fixtures/drill_event_data';
 
 describe('HeadlineTransformation', () => {
     let spyConsole;
@@ -62,7 +68,7 @@ describe('HeadlineTransformation', () => {
         const props = wrapper.find(Headline).props();
         expect(props.data).toEqual({
             primaryItem: {
-                uri: '/gdc/md/project_id/obj/1',
+                localIdentifier: 'm1',
                 title: 'Lost',
                 value: '42470571.16',
                 format: '$#,##0.00',
@@ -94,7 +100,7 @@ describe('HeadlineTransformation', () => {
         const props = wrapper.find(Headline).props();
         expect(props.data).toEqual({
             primaryItem: {
-                uri: '/gdc/md/project_id/obj/1',
+                localIdentifier: 'm1',
                 title: 'Lost',
                 value: '42470571.16',
                 format: '$#,##0.00',
@@ -147,13 +153,13 @@ describe('HeadlineTransformation', () => {
                 primaryValue.simulate('click', clickEvent);
 
                 expect(drillEventFunction).toHaveBeenCalledTimes(1);
-                expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA);
+                expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA_BY_MEASURE_URI);
 
                 expect(clickEvent.target.dispatchEvent).toHaveBeenCalledTimes(1);
                 const customEvent = clickEvent.target.dispatchEvent.mock.calls[0][0];
                 expect(customEvent.bubbles).toBeTruthy();
                 expect(customEvent.type).toEqual('drill');
-                expect(customEvent.detail).toEqual(DRILL_EVENT_DATA);
+                expect(customEvent.detail).toEqual(DRILL_EVENT_DATA_BY_MEASURE_URI);
             });
 
             it('should dispatch only drill event', () => {
@@ -175,9 +181,51 @@ describe('HeadlineTransformation', () => {
                 primaryValue.simulate('click', clickEvent);
 
                 expect(drillEventFunction).toHaveBeenCalledTimes(1);
-                expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA);
+                expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA_BY_MEASURE_URI);
 
                 expect(clickEvent.target.dispatchEvent).toHaveBeenCalledTimes(0);
+            });
+
+            it('should dispatch drill event for adhoc measure by defined uri', () => {
+                const drillEventFunction = jest.fn(() => false);
+
+                const wrapper = createComponent({
+                    executionRequest: SINGLE_URI_METRIC_EXECUTION_REQUEST,
+                    executionResponse: SINGLE_ADHOC_METRIC_EXECUTION_RESPONSE,
+                    executionResult: SINGLE_ADHOC_METRIC_EXECUTION_RESULT,
+                    drillableItems: [{
+                        uri: '/gdc/md/project_id/obj/1'
+                    }],
+                    onFiredDrillEvent: drillEventFunction
+                });
+
+                const primaryValue = wrapper.find('.s-headline-primary-value');
+                const clickEvent = { target: { dispatchEvent: jest.fn() } };
+                primaryValue.simulate('click', clickEvent);
+
+                expect(drillEventFunction).toHaveBeenCalledTimes(1);
+                expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA_BY_MEASURE_URI);
+            });
+
+            it('should dispatch drill event for adhoc measure by defined identifier', () => {
+                const drillEventFunction = jest.fn(() => false);
+
+                const wrapper = createComponent({
+                    executionRequest: SINGLE_IDENTIFIER_METRIC_EXECUTION_REQUEST,
+                    executionResponse: SINGLE_ADHOC_METRIC_EXECUTION_RESPONSE,
+                    executionResult: SINGLE_ADHOC_METRIC_EXECUTION_RESULT,
+                    drillableItems: [{
+                        identifier: 'metric.lost'
+                    }],
+                    onFiredDrillEvent: drillEventFunction
+                });
+
+                const primaryValue = wrapper.find('.s-headline-primary-value');
+                const clickEvent = { target: { dispatchEvent: jest.fn() } };
+                primaryValue.simulate('click', clickEvent);
+
+                expect(drillEventFunction).toHaveBeenCalledTimes(1);
+                expect(drillEventFunction).toBeCalledWith(DRILL_EVENT_DATA_BY_MEASURE_IDENTIFIER);
             });
         });
     });
