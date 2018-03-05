@@ -4,7 +4,8 @@ import { MAX_POINT_WIDTH } from './commonConfiguration';
 
 const COLUMN_TEMPLATE = {
     chart: {
-        type: 'column'
+        type: 'column',
+        spacingTop: 20
     },
     plotOptions: {
         column: {
