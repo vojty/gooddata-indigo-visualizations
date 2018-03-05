@@ -14,6 +14,11 @@ export const barChartWithoutAttributes = {
     executionResult: require('../test_data/bar_chart_without_attributes_result.json').executionResult
 };
 
+export const barChartWithNegativeAndZeroValues = immutableSet(barChartWithoutAttributes, 'executionResult.data', [
+    ['-116625456.54'],
+    ['0']
+]);
+
 export const barChartWith3MetricsAndViewByAttribute = {
     executionRequest: require('../test_data/bar_chart_with_3_metrics_and_view_by_attribute_request.json').execution,
     executionResponse: require('../test_data/bar_chart_with_3_metrics_and_view_by_attribute_response.json').executionResponse,
@@ -144,5 +149,6 @@ export default {
     barChartWithStackByAndViewByAttributes,
     barChartWithPopMeasureAndViewByAttribute,
     barChartWith6PopMeasuresAndViewByAttribute,
-    pieChartWithMetricsOnly
+    pieChartWithMetricsOnly,
+    barChartWithNegativeAndZeroValues
 };

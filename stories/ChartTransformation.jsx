@@ -590,6 +590,15 @@ storiesOf('ChartTransformation', module)
             })
         )
     ))
+    .add('Negative and zero values', () => (
+        screenshotWrap(
+            getChart({
+                dataSet: fixtures.barChartWithNegativeAndZeroValues,
+                height: 500,
+                width: '100%'
+            })
+        )
+    ))
     .add('Dynamic Chart test', () => (
         <DynamicChart />
     ));
