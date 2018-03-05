@@ -91,12 +91,27 @@ export class TotalCell extends Component {
 
         const style = { height: TOTALS_ADD_ROW_HEIGHT };
 
-        const className = cx('indigo-table-footer-cell', `col-${columnIndex}`, 'indigo-totals-add-cell');
+        const className = cx(
+            'indigo-table-footer-cell',
+            `col-${columnIndex}`,
+            'indigo-totals-add-cell',
+            `s-total-add-cell-${columnIndex}`,
+        );
 
         return (
             <div className={className} style={style}>
                 {this.renderAddTotalButton(header, columnIndex, headersCount)}
             </div>
+        );
+    }
+
+    renderHeaderCellContent(total) {
+        const { intl } = this.props;
+        const content = total.alias || intl.formatMessage({ id: `visualizations.totals.row.title.${total.type}` });
+        return (
+            <span className={cx(`s-total-header-${total.type}`)}>
+                {content}
+            </span>
         );
     }
 
@@ -110,7 +125,7 @@ export class TotalCell extends Component {
         const columnHasTotal = hasTableColumnTotalEnabled(total.outputMeasureIndexes, columnIndex, firstMeasureIndex);
 
         const labelElement = (
-            <span className={cx('s-total-column-value')} title={label} style={style}>{label}</span>
+            <span className={cx(`s-total-value-column-${total.type}-${columnIndex}`)} title={label} style={style}>{label}</span>
         );
 
         if (editAllowed) {
@@ -151,9 +166,7 @@ export class TotalCell extends Component {
 
     renderCellContent(isFirstColumn, isMeasureColumn, columnIndex, measureColumnIndex, total, header) {
         if (isFirstColumn) {
-            return total.alias || this.props.intl.formatMessage({
-                id: `visualizations.totals.row.title.${total.type}`
-            });
+            return this.renderHeaderCellContent(total);
         }
 
         if (isMeasureColumn) {
