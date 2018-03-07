@@ -666,7 +666,7 @@ export class TableVisualization extends Component {
             }) : cellProps;
 
             const cellPropsHover = hoverable ? assign({}, cellPropsDrill, {
-                onMouseEnter: () => this.toggleFooterColumnHighlight(columnIndex, true),
+                onMouseOver: () => this.toggleFooterColumnHighlight(columnIndex, true),
                 onMouseLeave: () => this.toggleFooterColumnHighlight(columnIndex, false)
             }) : cellPropsDrill;
 
@@ -693,7 +693,7 @@ export class TableVisualization extends Component {
                 headersCount={headersCount}
                 firstMeasureIndex={getFirstMeasureIndex(headers)}
                 editAllowed={this.isTotalsEditAllowed()}
-                onCellMouseEnter={(rowIndex, colIndex) => {
+                onCellMouseOver={(rowIndex, colIndex) => {
                     this.resetTotalsRowHighlight(rowIndex);
                     this.toggleFooterColumnHighlight(colIndex, true);
                 }}

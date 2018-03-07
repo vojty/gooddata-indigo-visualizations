@@ -203,7 +203,7 @@ describe('TotalCells', () => {
 
             it('should bind mouse events on total cell', () => {
                 const events = {
-                    onCellMouseEnter: jest.fn(),
+                    onCellMouseOver: jest.fn(),
                     onCellMouseLeave: jest.fn()
                 };
                 const wrapper = render({
@@ -213,9 +213,9 @@ describe('TotalCells', () => {
                 });
                 const cell = wrapper.find('.indigo-table-footer-cell.col-1').at(0);
 
-                cell.simulate('mouseEnter');
+                cell.simulate('mouseOver');
 
-                expect(events.onCellMouseEnter).toBeCalledWith(0, 1);
+                expect(events.onCellMouseOver).toBeCalledWith(0, 1);
 
                 cell.simulate('mouseLeave');
 
