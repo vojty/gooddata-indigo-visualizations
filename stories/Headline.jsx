@@ -38,14 +38,33 @@ storiesOf('Headline components/Headline', module)
                         primaryItem: {
                             uri: 'myId',
                             value: '666429.405',
-                            format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00',
+                            format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00 group',
                             title: 'Yearly Earnings',
                             isDrillable: false
                         }
                     }}
                     onAfterRender={action('onAfterRender')}
                 />,
-                100, 350)
+                100, 700)
+        )
+    )
+    .add('Formatted with drilling', () =>
+        screenshotWrap(
+            wrap(
+                <Headline
+                    data={{
+                        primaryItem: {
+                            localIdentifier: 'myId',
+                            value: '6664.405',
+                            format: '[color=9c46b5] $#,##0.00 group',
+                            title: 'Yearly Earnings',
+                            isDrillable: true
+                        }
+                    }}
+                    onAfterRender={action('onAfterRender')}
+                    onFiredDrillEvent={action('onFiredDrillEvent')}
+                />,
+                100, 700)
         )
     )
     .add('Invalid value - default formatting', () =>
