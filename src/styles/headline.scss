@@ -6,7 +6,7 @@
 
     &:hover .headline-primary-link,
     &:hover .headline-primary-link .headline-primary-value--empty {
-        color: $gd-color-text;
+        color: $gd-color-link;
     }
 }
 
@@ -22,7 +22,7 @@
 }
 
 .headline-primary-value {
-    line-height: 100%;
+    line-height: 115%;
     vertical-align: top;
 }
 
@@ -38,7 +38,6 @@
         &:not(.headline-primary-value--empty) {
             position: relative;
             display: inline-block;
-            padding-bottom: 2px;
 
             &::after {
                 content: '';
