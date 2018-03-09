@@ -35,7 +35,7 @@ describe('ChartTransformation', () => {
         let colorPalette;
         const customColors = ['#000000', '#ff0000'];
         const renderer = (params) => {
-            colorPalette = params.chartOptions.colorPalette;
+            colorPalette = params.chartOptions.colorPalette; // eslint-disable-line prefer-destructuring
             return <div />;
         };
         const componentProps = {

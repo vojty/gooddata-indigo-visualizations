@@ -91,7 +91,7 @@ export default class ResponsiveTable extends Component {
     }
 
     render() {
-        const props = this.props;
+        const { props } = this;
 
         const tableProps = {
             ...props,

@@ -405,7 +405,7 @@ export function getChartOptions(
 
     invariant(config && CHART_TYPES.includes(config.type), `config.type must be defined and match one of supported chart types: ${CHART_TYPES.join(', ')}`);
 
-    const type = config.type;
+    const { type } = config;
     const measureGroup = findMeasureGroupInDimensions(dimensions);
     const viewByAttribute = findAttributeInDimension(
         dimensions[VIEW_BY_DIMENSION_INDEX],

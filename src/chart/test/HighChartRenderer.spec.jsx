@@ -97,7 +97,7 @@ describe('HighChartRenderer', () => {
             chartRenderer,
             ref: mockRef
         }));
-        const chartRef = wrapper.instance().chartRef;
+        const { chartRef } = wrapper.instance();
         expect(chartRef).toBe(mockRef);
     });
 
@@ -269,7 +269,7 @@ describe('HighChartRenderer', () => {
 
         it('should reset legend if legend props change', () => {
             const wrapper = mount(createComponent(rendererProps));
-            const props = wrapper.instance().props;
+            const { props } = wrapper.instance();
             const getLegendItems = () => wrapper.instance().state.legendItemsEnabled;
 
             const legendItemsEnabledState = getLegendItems();
@@ -298,7 +298,7 @@ describe('HighChartRenderer', () => {
 
         it('should not reset legend if props change but legend items stay the same', () => {
             const wrapper = mount(createComponent(rendererProps));
-            const props = wrapper.instance().props;
+            const { props } = wrapper.instance();
             const getLegendItems = () => wrapper.instance().state.legendItemsEnabled;
 
             const legendItemsEnabledState = getLegendItems();

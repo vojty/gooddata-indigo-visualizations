@@ -63,7 +63,7 @@ export default class ChartTransformation extends Component {
 
     getRendererProps() {
         const { executionRequest: { afm }, height, width, afterRender, config, onFiredDrillEvent } = this.props;
-        const chartOptions = this.chartOptions;
+        const { chartOptions } = this;
         const drillConfig = { afm, onFiredDrillEvent };
         const hcOptions = getHighchartsOptions(chartOptions, drillConfig);
         return {

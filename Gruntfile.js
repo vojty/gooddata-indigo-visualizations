@@ -28,9 +28,9 @@ module.exports = (grunt) => {
                 options: {
                     babelrc: false,
                     presets: [
-                        'es2015',
+                        'env',
                         'react',
-                        'stage-0'
+                        'stage-2'
                     ],
                     plugins: [
                         'lodash'
