@@ -1,7 +1,7 @@
 // (C) 2007-2018 GoodData Corporation
 import { pick } from 'lodash';
 import { RIGHT } from './PositionTypes';
-import { PIE_CHART } from '../../VisualizationTypes';
+import { isAreaChart, isPieChart } from '../../utils/common';
 
 export const DEFAULT_LEGEND_CONFIG = {
     enabled: true,
@@ -10,17 +10,20 @@ export const DEFAULT_LEGEND_CONFIG = {
 
 export function shouldLegendBeEnabled(chartOptions) {
     const seriesLength = chartOptions.data.series.length;
+    const { type, stacking, hasStackByAttribute } = chartOptions;
     // More than one measure or stackedBy more than one category
     const hasMoreThanOneSeries = seriesLength > 1;
-    const isStacked = !!chartOptions.stacking;
+    const isAreaChartWithOneSerie = isAreaChart(type) && !hasMoreThanOneSeries && !hasStackByAttribute;
+    const isStacked = !isAreaChartWithOneSerie && Boolean(stacking);
+
     const isPieChartWithMoreThanOneCategory =
-        (chartOptions.type === PIE_CHART && chartOptions.data.series[0].data.length > 1);
+        (isPieChart(type) && chartOptions.data.series[0].data.length > 1);
 
     return hasMoreThanOneSeries || isPieChartWithMoreThanOneCategory || isStacked;
 }
 
 export function getLegendItems(chartOptions) {
-    const legendDataSource = chartOptions.type === PIE_CHART
+    const legendDataSource = isPieChart(chartOptions.type)
         ? chartOptions.data.series[0].data
         : chartOptions.data.series;
     return legendDataSource.map(legendDataSourceItem => pick(legendDataSourceItem, ['name', 'color', 'legendIndex']));

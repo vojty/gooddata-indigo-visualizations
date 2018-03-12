@@ -7,9 +7,15 @@ import {
     numberFormat
 } from '@gooddata/numberjs';
 
-import { BAR_CHART, COLUMN_CHART, LINE_CHART, PIE_CHART } from '../../VisualizationTypes';
+import { BAR_CHART, COLUMN_CHART, LINE_CHART, PIE_CHART, AREA_CHART } from '../../VisualizationTypes';
 import { HOVER_BRIGHTNESS, MINIMUM_HC_SAFE_BRIGHTNESS } from './commonConfiguration';
 import { getLighterColor } from '../../utils/color';
+import {
+    isLineChart,
+    isAreaChart,
+    isBarChart,
+    isColumnChart
+} from '../../utils/common';
 
 const EMPTY_DATA = { categories: [], series: [] };
 
@@ -90,7 +96,7 @@ const getTooltipHorizontalStartingPosition = (arrowPosition, chartWidth, tooltip
 };
 
 function getArrowHorizontalPosition(chartType, stacking, dataPointEnd, dataPointHeight) {
-    if (chartType === BAR_CHART && stacking) {
+    if (isBarChart(chartType) && stacking) {
         return dataPointEnd - (dataPointHeight / 2);
     }
 
@@ -98,19 +104,19 @@ function getArrowHorizontalPosition(chartType, stacking, dataPointEnd, dataPoint
 }
 
 function getDataPointEnd(chartType, isNegative, endPoint, height, stacking) {
-    return (chartType === BAR_CHART && isNegative && stacking) ? endPoint + height : endPoint;
+    return (isBarChart(chartType) && isNegative && stacking) ? endPoint + height : endPoint;
 }
 
 function getDataPointStart(chartType, isNegative, endPoint, height, stacking) {
-    return (chartType === COLUMN_CHART && isNegative && stacking) ? endPoint - height : endPoint;
+    return (isColumnChart(chartType) && isNegative && stacking) ? endPoint - height : endPoint;
 }
 
 function getTooltipVerticalOffset(chartType, stacking, point) {
-    if (chartType === COLUMN_CHART && (stacking || point.negative)) {
+    if (isColumnChart(chartType) && (stacking || point.negative)) {
         return 0;
     }
 
-    if (chartType === BAR_CHART) {
+    if (isBarChart(chartType)) {
         return TOOLTIP_BAR_CHART_VERTICAL_OFFSET;
     }
 
@@ -157,7 +163,7 @@ function formatTooltip(chartType, stacking, tooltipCallback) {
         return false;
     }
 
-    const dataPointEnd = (chartType === LINE_CHART)
+    const dataPointEnd = (isLineChart(chartType) || isAreaChart(chartType))
         ? this.point.plotX
         : getDataPointEnd(
             chartType,
@@ -167,7 +173,7 @@ function formatTooltip(chartType, stacking, tooltipCallback) {
             stacking
         );
 
-    const dataPointHeight = (chartType === LINE_CHART) ? 0 : this.point.shapeArgs.height;
+    const dataPointHeight = (isLineChart(chartType) || isAreaChart(chartType)) ? 0 : this.point.shapeArgs.height;
 
     const arrowPosition = getArrowHorizontalPosition(
         chartType,
@@ -357,6 +363,7 @@ function getHoverStyles(chartOptions, config) {
             throw new Error(`Undefined chart type "${chartOptions.type}".`);
 
         case LINE_CHART:
+        case AREA_CHART:
             seriesMapFn = (seriesOrig) => {
                 const series = cloneDeep(seriesOrig);
 

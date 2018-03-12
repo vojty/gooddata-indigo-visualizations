@@ -51,6 +51,48 @@ describe('ChartTransformation', () => {
         expect(colorPalette).toEqual(customColors);
     });
 
+    describe('Stacking config', () => {
+        const defaultConfig = {
+            type: 'area'
+        };
+
+
+        function createChartRendererProps(
+            executionData = fixtures.areaChartWith3MetricsAndViewByAttribute,
+            config = {}
+        ) {
+            const renderer = jest.fn().mockReturnValue(<div />);
+            mount(createComponent({
+                renderer,
+                ...executionData,
+                config: {
+                    ...config,
+                    type: config.type || defaultConfig.type
+                }
+            }));
+            return renderer.mock.calls[0][0];
+        }
+
+        it('should be enabled by default for area chart', () => {
+            const passedProps = createChartRendererProps(fixtures.areaChartWith3MetricsAndViewByAttribute);
+            expect(passedProps.chartOptions.stacking).toEqual('normal');
+        });
+
+        it('should be enabled by configuration', () => {
+            const passedProps = createChartRendererProps(fixtures.areaChartWith3MetricsAndViewByAttribute, {
+                stacking: true
+            });
+            expect(passedProps.chartOptions.stacking).toEqual('normal');
+        });
+
+        it('should be disabled by configuration', () => {
+            const passedProps = createChartRendererProps(fixtures.areaChartWith3MetricsAndViewByAttribute, {
+                stacking: false
+            });
+            expect(passedProps.chartOptions.stacking).toBeNull();
+        });
+    });
+
     describe('Legend config', () => {
         const defaultConfig = {
             type: 'column',

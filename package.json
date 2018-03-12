@@ -89,7 +89,7 @@
     "react-dom": "15.6.2"
   },
   "dependencies": {
-    "@gooddata/goodstrap": "55.0.0-alpha3",
+    "@gooddata/goodstrap": "55.0.0-alpha4",
     "@gooddata/js-utils": "0.7.1",
     "@gooddata/numberjs": "3.0.0",
     "classnames": "2.2.5",
