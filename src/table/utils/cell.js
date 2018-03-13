@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import cx from 'classnames';
 import { colors2Object, numberFormat } from '@gooddata/numberjs';
 import styleVariables from '../../styles/variables';

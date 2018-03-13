@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { range } from 'lodash';
 import { immutableSet } from '../../utils/common';
 import {

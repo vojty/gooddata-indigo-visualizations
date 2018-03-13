@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { range, unzip, isNumber } from 'lodash';
 
 function generateRawData(fns, length) {

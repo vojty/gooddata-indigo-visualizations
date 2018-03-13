@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { range, cloneDeep } from 'lodash';
 import { immutableSet, repeatItemsNTimes } from '../../src/utils/common';
 import { STACK_BY_DIMENSION_INDEX } from '../../src/chart/constants';

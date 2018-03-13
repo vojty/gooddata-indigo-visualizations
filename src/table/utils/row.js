@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { DEFAULT_ROW_HEIGHT } from '../TableVisualization';
 
 function setPosition(element, position, top, sticking = false) {

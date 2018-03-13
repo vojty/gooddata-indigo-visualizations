@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import Visualization from './Visualization';
 
 import ChartTransformation from './chart/ChartTransformation';

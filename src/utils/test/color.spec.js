@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2016, GoodData(R) Corporation. All rights reserved.
+// (C) 2007-2018 GoodData Corporation
 /* eslint no-underscore-dangle: 0 */
 
 import { getLighterColor } from '../color';

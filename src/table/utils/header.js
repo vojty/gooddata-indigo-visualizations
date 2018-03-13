@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import cx from 'classnames';
 import { clamp } from 'lodash';
 import { string } from '@gooddata/js-utils';

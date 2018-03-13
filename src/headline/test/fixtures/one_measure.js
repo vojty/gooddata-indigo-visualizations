@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 export const SINGLE_URI_METRIC_EXECUTION_REQUEST = {
     afm: {
         measures: [

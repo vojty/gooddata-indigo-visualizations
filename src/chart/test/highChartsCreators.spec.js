@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { getHighchartsOptions } from '../highChartsCreators';
 import { BAR_CHART, COLUMN_CHART, LINE_CHART, PIE_CHART } from '../../VisualizationTypes';
 

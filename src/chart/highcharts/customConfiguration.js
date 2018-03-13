@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { set, get, merge, map, partial, isEmpty, compact, cloneDeep, every } from 'lodash';
 import cx from 'classnames';
 

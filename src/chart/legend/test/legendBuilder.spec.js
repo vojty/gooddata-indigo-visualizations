@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { generateChartOptions } from '../../test/chartOptionsBuilder.spec';
 import * as fixtures from '../../../../stories/test_data/fixtures';
 import getLegend, {

@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { getHeaderOffset } from './header';
 import { getHiddenRowsOffset } from './row';
 import { DEFAULT_FOOTER_ROW_HEIGHT, TOTALS_ADD_ROW_HEIGHT } from '../TableVisualization';

@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 export const EXECUTION_REQUEST_1M = {
     afm: {
         measures: [

@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { getChartType } from '../../helpers';
 import { COLUMN_CHART, BAR_CHART } from '../../../../VisualizationTypes';
 import autohideColumnLabels from './autohideColumnLabels';

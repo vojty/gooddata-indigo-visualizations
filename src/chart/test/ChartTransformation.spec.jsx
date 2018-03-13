@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import ChartTransformation from '../ChartTransformation';

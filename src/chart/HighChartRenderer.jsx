@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import Highcharts from 'highcharts';
 import drillmodule from 'highcharts/modules/drilldown';
 import React, { PureComponent } from 'react';

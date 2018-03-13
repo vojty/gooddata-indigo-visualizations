@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 export const TOTALS_DEFINITION_1 = [{
     type: 'sum',
     outputMeasureIndexes: [],

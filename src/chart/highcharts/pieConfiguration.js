@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import cloneDeep from 'lodash/cloneDeep';
 
 const PIE_TEMPLATE = {
