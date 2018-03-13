@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import PropTypes from 'prop-types';
 
 export const HeadlineConfig = PropTypes.shape({

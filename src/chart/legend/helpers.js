@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { RIGHT } from './PositionTypes';
 
 export const RESPONSIVE_ITEM_MIN_WIDTH = 200;

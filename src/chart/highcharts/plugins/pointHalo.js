@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 export function applyPointHaloOptions(Highcharts) {
     Highcharts.wrap(Highcharts.Point.prototype, 'setState', function setState(proceed, ...args) {
         const tmp = this.series.options.states.hover.halo;

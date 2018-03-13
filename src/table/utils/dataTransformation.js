@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import invariant from 'invariant';
 import { get, has, isObject, omit, zip, isEmpty } from 'lodash';
 import { getAttributeElementIdFromAttributeElementUri } from '../../utils/common';

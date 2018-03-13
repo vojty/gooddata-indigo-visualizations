@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { assign } from 'lodash';
 
 export const barChart2Series = {

@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { merge, get } from 'lodash';
 import invariant from 'invariant';
 import {

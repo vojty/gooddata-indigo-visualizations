@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import React from 'react';
 import { mount } from 'enzyme';
 import Dropdown from '@gooddata/goodstrap/lib/Dropdown/Dropdown';

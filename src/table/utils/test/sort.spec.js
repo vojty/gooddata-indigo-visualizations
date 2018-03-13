@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { createSortItem, getHeaderSortClassName, getNextSortDir, getSortInfo, getSortItem } from '../sort';
 import { ASC, DESC } from '../../constants/sort';
 import { TABLE_HEADERS_2A_3M } from '../../fixtures/2attributes3measures';

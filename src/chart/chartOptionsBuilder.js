@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { colors2Object, numberFormat } from '@gooddata/numberjs';
 import invariant from 'invariant';
 

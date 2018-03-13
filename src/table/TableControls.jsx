@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';

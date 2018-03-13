@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { getCellClassNames, getColumnAlign, getStyledLabel } from '../cell';
 import { ALIGN_LEFT, ALIGN_RIGHT } from '../../constants/align';
 import { TABLE_HEADERS_2A_3M } from '../../fixtures/2attributes3measures';

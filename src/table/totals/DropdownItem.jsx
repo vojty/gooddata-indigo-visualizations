@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import React, { Component, PropTypes } from 'react';
 import { injectIntl, FormattedMessage, intlShape } from 'react-intl';
 import cx from 'classnames';

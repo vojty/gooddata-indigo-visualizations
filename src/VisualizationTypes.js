@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 export const TABLE = 'table';
 export const COLUMN_CHART = 'column';
 export const BAR_CHART = 'bar';

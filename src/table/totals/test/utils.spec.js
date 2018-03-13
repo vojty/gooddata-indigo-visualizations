@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 /* eslint-disable react/jsx-filename-extension,react/no-multi-comp */
 import React, { Component } from 'react';
 import { mount } from 'enzyme';

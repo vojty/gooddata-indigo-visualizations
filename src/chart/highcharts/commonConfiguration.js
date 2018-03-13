@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { cloneDeep, invoke, get, set, isEmpty } from 'lodash';
 import { chartClick } from '../../utils/drilldownEventing';
 import styleVariables from '../../styles/variables';

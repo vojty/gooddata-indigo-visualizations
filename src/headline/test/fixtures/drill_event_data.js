@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 export const DRILL_EVENT_DATA_BY_MEASURE_URI = {
     drillContext: {
         element: 'primaryValue',

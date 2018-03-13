@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { setWith, clone } from 'lodash';
 import { Observable } from 'rxjs/Rx';
 

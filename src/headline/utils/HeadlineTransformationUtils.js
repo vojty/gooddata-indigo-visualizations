@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { cloneDeep, get, isEmpty } from 'lodash';
 import { getMeasureUriOrIdentifier } from '../../utils/drilldownEventing';
 
