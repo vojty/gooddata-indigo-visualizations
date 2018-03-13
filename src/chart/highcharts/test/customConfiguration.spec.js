@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { getCustomizedConfiguration } from '../customConfiguration';
 import { LINE_CHART } from '../../../VisualizationTypes';
 

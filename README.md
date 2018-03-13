@@ -29,6 +29,6 @@ Visual regression testing for Storybook is provided by [@gooddata/test-storybook
 Report bugs and features on our [issues page](https://github.com/gooddata/gooddata-indigo-visualizations/issues).
 
 ## License
-Copyright (C) 2007-2017, GoodData(R) Corporation. All rights reserved.
+(C) 2007-2018 GoodData Corporation
 
 For more information, please see [LICENSE](https://github.com/gooddata/gooddata-indigo-visualizations/blob/master/LICENSE)

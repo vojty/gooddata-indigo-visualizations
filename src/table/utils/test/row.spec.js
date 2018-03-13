@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { getHiddenRowsOffset, updatePosition } from '../row';
 
 describe('Table utils - Row', () => {

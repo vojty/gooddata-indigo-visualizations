@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import React from 'react';
 import { noop } from 'lodash';
 import { mount } from 'enzyme';

@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { get, debounce } from 'lodash';
 import invariant from 'invariant';
 import CustomEvent from 'custom-event';

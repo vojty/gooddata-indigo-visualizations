@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import { remove, cloneDeep, sortedUniq, clone, without, findIndex, omit, sortBy } from 'lodash';
 import { getFooterHeight } from '../utils/footer';
 

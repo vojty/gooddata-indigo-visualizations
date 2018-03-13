@@ -1,3 +1,4 @@
+// (C) 2007-2018 GoodData Corporation
 import Highcharts from 'highcharts';
 import { noop, isEqual } from 'lodash';
 import React, { Component } from 'react';
