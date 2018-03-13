@@ -28,7 +28,7 @@ export class TotalCell extends Component {
         headersCount: PropTypes.number.isRequired,
         firstMeasureIndex: PropTypes.number.isRequired,
         editAllowed: PropTypes.bool,
-        onCellMouseEnter: PropTypes.func,
+        onCellMouseOver: PropTypes.func,
         onCellMouseLeave: PropTypes.func,
         onEnableColumn: PropTypes.func,
         onDisableColumn: PropTypes.func,
@@ -41,7 +41,7 @@ export class TotalCell extends Component {
 
     static defaultProps = {
         editAllowed: false,
-        onCellMouseEnter: noop,
+        onCellMouseOver: noop,
         onCellMouseLeave: noop,
         onEnableColumn: noop,
         onDisableColumn: noop,
@@ -125,7 +125,7 @@ export class TotalCell extends Component {
         const columnHasTotal = hasTableColumnTotalEnabled(total.outputMeasureIndexes, columnIndex, firstMeasureIndex);
 
         const labelElement = (
-            <span className={cx(`s-total-value-column-${total.type}-${columnIndex}`)} title={label} style={style}>{label}</span>
+            <span className={cx('s-total-value')} title={label} style={style}>{label}</span>
         );
 
         if (editAllowed) {
@@ -134,7 +134,7 @@ export class TotalCell extends Component {
                     <span>
                         <span
                             className={cx('button-link', 'button-icon-only', 'icon-circle-cross',
-                                'indigo-totals-disable-column-button', `s-disable-total-column-${total.type}-${columnIndex}`
+                                'indigo-totals-disable-column-button', 's-disable-total-column'
                             )}
                             onClick={() => {
                                 this.props.onDisableColumn(columnIndex, total.type);
@@ -148,7 +148,7 @@ export class TotalCell extends Component {
             return (
                 <span
                     className={cx('button-link', 'button-icon-only', 'icon-circle-plus',
-                        'indigo-totals-enable-column-button', `s-enable-total-column-${total.type}-${columnIndex}`
+                        'indigo-totals-enable-column-button', 's-enable-total-column'
                     )}
                     onClick={() => {
                         this.props.onEnableColumn(columnIndex, total.type);
@@ -186,7 +186,7 @@ export class TotalCell extends Component {
             editAllowed,
             headersCount,
             firstMeasureIndex,
-            onCellMouseEnter,
+            onCellMouseOver,
             onCellMouseLeave
         } = this.props;
 
@@ -195,12 +195,12 @@ export class TotalCell extends Component {
         const isMeasureColumn = measureColumnIndex >= 0;
 
         const cellContent = totalsWithData.map((total, rowIndex) => {
-            const className = cx('indigo-table-footer-cell', `col-${columnIndex}`);
+            const className = cx('indigo-table-footer-cell', `col-${columnIndex}`, `s-total-${total.type}-${columnIndex}`);
             const style = { height: DEFAULT_FOOTER_ROW_HEIGHT };
 
             const events = editAllowed ? {
-                onMouseEnter: () => {
-                    onCellMouseEnter(rowIndex, columnIndex);
+                onMouseOver: () => {
+                    onCellMouseOver(rowIndex, columnIndex);
                 },
                 onMouseLeave: () => {
                     onCellMouseLeave(rowIndex, columnIndex);

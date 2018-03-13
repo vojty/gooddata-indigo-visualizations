@@ -350,7 +350,7 @@ describe('Table', () => {
 
                 component.toggleFooterColumnHighlight = jest.fn();
 
-                cell.simulate('mouseEnter');
+                cell.simulate('mouseOver');
 
                 expect(component.toggleFooterColumnHighlight).toBeCalledWith(2, true);
 
