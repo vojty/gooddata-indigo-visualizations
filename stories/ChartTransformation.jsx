@@ -12,6 +12,7 @@ import { VIEW_BY_DIMENSION_INDEX, STACK_BY_DIMENSION_INDEX } from '../src/chart/
 import fixtureDataSets, * as fixtures from './test_data/fixtures';
 
 import { wrap } from './utils/wrap';
+import CustomLegend from './utils/CustomLegend';
 
 import '../src/styles/charts.scss';
 
@@ -601,6 +602,9 @@ storiesOf('ChartTransformation', module)
                 width: '100%'
             })
         )
+    ))
+    .add('Custom legend implementation', () => (
+        <CustomLegend />
     ))
     .add('Dynamic Chart test', () => (
         <DynamicChart />

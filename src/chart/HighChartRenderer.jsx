@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import drillmodule from 'highcharts/modules/drilldown';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { cloneDeep, get, set, isEqual } from 'lodash';
+import { cloneDeep, get, set, isEqual, partial } from 'lodash';
 import cx from 'classnames';
 
 import { PIE_CHART } from '../VisualizationTypes';
@@ -42,7 +42,8 @@ export default class HighChartRenderer extends PureComponent {
             })).isRequired
         }),
         chartRenderer: PropTypes.func,
-        legendRenderer: PropTypes.func
+        legendRenderer: PropTypes.func,
+        onLegendReady: PropTypes.func
     };
 
     static defaultProps = {
@@ -54,7 +55,8 @@ export default class HighChartRenderer extends PureComponent {
             position: RIGHT
         },
         chartRenderer: renderChart,
-        legendRenderer: renderLegend
+        legendRenderer: renderLegend,
+        onLegendReady: () => {}
     };
 
     constructor(props) {
@@ -82,6 +84,10 @@ export default class HighChartRenderer extends PureComponent {
                 chart.reflow();
             }
         }, 0);
+
+        this.props.onLegendReady({
+            legendItems: this.getItems(this.props.legend.items)
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -90,6 +96,12 @@ export default class HighChartRenderer extends PureComponent {
         const hasLegendChanged = !isEqual(thisLegendItems, nextLegendItems);
         if (hasLegendChanged) {
             this.resetLegendState(nextProps);
+        }
+
+        if (!isEqual(this.props.legend.items, nextProps.legend.items)) {
+            this.props.onLegendReady({
+                legendItems: this.getItems(nextProps.legend.items)
+            });
         }
     }
 
@@ -115,6 +127,16 @@ export default class HighChartRenderer extends PureComponent {
         }
 
         return 'row';
+    }
+
+    getItems(items) {
+        return items.map((i) => {
+            return {
+                name: i.name,
+                color: i.color,
+                onClick: partial(this.onLegendItemClick, i)
+            };
+        });
     }
 
     resetLegendState(props) {
