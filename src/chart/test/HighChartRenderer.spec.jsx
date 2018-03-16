@@ -24,7 +24,11 @@ function createComponent(customProps = {}) {
         hcOptions: getHighchartsOptions(chartOptions, drillConfig),
         legend: {
             enabled: false,
-            items: []
+            items: [{
+                name: 'Serie A',
+                color: '#000',
+                legendIndex: 0
+            }]
         },
         ...customProps
     };
@@ -32,6 +36,67 @@ function createComponent(customProps = {}) {
 }
 
 describe('HighChartRenderer', () => {
+    describe('onLegendReady', () => {
+        it('should dispatch after mount', () => {
+            const onLegendReady = jest.fn();
+            mount(createComponent({
+                onLegendReady
+            }));
+
+            expect(onLegendReady).toHaveBeenCalledTimes(1);
+            expect(onLegendReady).toHaveBeenCalledWith({
+                legendItems: [
+                    {
+                        name: 'Serie A',
+                        color: '#000',
+                        onClick: expect.any(Function)
+                    }
+                ]
+            });
+        });
+
+        it('should dispatch when recieve new props', () => {
+            const onLegendReady = jest.fn();
+            const wrapper = mount(createComponent({
+                onLegendReady
+            }));
+
+            const newLegendItems = [
+                {
+                    name: 'Serie A',
+                    color: '#000',
+                    legendIndex: 0
+                },
+                {
+                    name: 'Serie b',
+                    color: '#fff',
+                    legendIndex: 1
+                }
+            ];
+            wrapper.setProps({
+                legend: {
+                    items: newLegendItems
+                }
+            });
+
+            expect(onLegendReady).toHaveBeenCalledTimes(2);
+            expect(onLegendReady).toHaveBeenLastCalledWith({
+                legendItems: [
+                    {
+                        name: 'Serie A',
+                        color: '#000',
+                        onClick: expect.any(Function)
+                    },
+                    {
+                        name: 'Serie b',
+                        color: '#fff',
+                        onClick: expect.any(Function)
+                    }
+                ]
+            });
+        });
+    });
+
     it('should use custom Chart renderer', () => {
         const chartRenderer = jest.fn().mockReturnValue(<div />);
         mount(createComponent({ chartRenderer }));

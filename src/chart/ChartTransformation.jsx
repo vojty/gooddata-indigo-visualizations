@@ -36,6 +36,7 @@ export default class ChartTransformation extends Component {
         onDataTooLarge: PropTypes.func.isRequired,
         onNegativeValues: PropTypes.func,
         onFiredDrillEvent: PropTypes.func,
+        onLegendReady: PropTypes.func,
 
         executionRequest: ExecutionRequestPropTypes.isRequired,
         executionResponse: ExecutionResponsePropTypes.isRequired,
@@ -49,6 +50,7 @@ export default class ChartTransformation extends Component {
         afterRender: () => {},
         onNegativeValues: null,
         onFiredDrillEvent: () => {},
+        onLegendReady: () => {},
         limits: {},
         height: undefined,
         width: undefined
@@ -63,7 +65,15 @@ export default class ChartTransformation extends Component {
     }
 
     getRendererProps() {
-        const { executionRequest: { afm }, height, width, afterRender, config, onFiredDrillEvent } = this.props;
+        const {
+            executionRequest: { afm },
+            height,
+            width,
+            afterRender,
+            config,
+            onFiredDrillEvent,
+            onLegendReady
+        } = this.props;
         const chartOptions = this.chartOptions;
         const drillConfig = { afm, onFiredDrillEvent };
         const hcOptions = getHighchartsOptions(chartOptions, drillConfig);
@@ -73,6 +83,7 @@ export default class ChartTransformation extends Component {
             height,
             width,
             afterRender,
+            onLegendReady,
             legend: getLegend(config.legend, chartOptions)
         };
     }
