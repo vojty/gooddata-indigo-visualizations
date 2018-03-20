@@ -1,6 +1,7 @@
 // (C) 2007-2018 GoodData Corporation
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl, intlShape } from 'react-intl';
 import { noop } from 'lodash';
 import {
     ExecutionRequestPropTypes,
@@ -13,16 +14,15 @@ import {
     applyDrillableItems,
     buildDrillEventData,
     fireDrillEvent,
-    getData
+    getHeadlineData
 } from './utils/HeadlineTransformationUtils';
-import { HeadlineConfig } from '../proptypes/headline';
 
 /**
  * The React component that handles the transformation of the execution objects into the data accepted by the {Headline}
  * React component that this components wraps. It also handles the propagation of the drillable items to the component
  * and drill events out of it.
  */
-export default class HeadlineTransformation extends Component {
+class HeadlineTransformation extends Component {
     static propTypes = {
         executionRequest: ExecutionRequestPropTypes.isRequired,
         executionResponse: ExecutionResponsePropTypes.isRequired,
@@ -30,17 +30,14 @@ export default class HeadlineTransformation extends Component {
 
         drillableItems: PropTypes.arrayOf(PropTypes.shape(DrillableItem)),
 
-        config: HeadlineConfig,
-
         onFiredDrillEvent: PropTypes.func,
-        onAfterRender: PropTypes.func
+        onAfterRender: PropTypes.func,
+
+        intl: intlShape.isRequired
     };
 
     static defaultProps = {
         drillableItems: [],
-        config: {
-            maxFontSize: 50
-        },
         onFiredDrillEvent: noop,
         onAfterRender: noop
     };
@@ -60,20 +57,19 @@ export default class HeadlineTransformation extends Component {
 
     render() {
         const {
+            intl,
             executionRequest,
             executionResponse,
             executionResult,
             drillableItems,
-            config,
             onAfterRender
         } = this.props;
 
-        const data = getData(executionRequest, executionResponse, executionResult);
+        const data = getHeadlineData(executionResponse, executionResult, intl);
         const dataWithUpdatedDrilling = applyDrillableItems(data, drillableItems, executionRequest);
 
         return (
             <Headline
-                config={config}
                 data={dataWithUpdatedDrilling}
                 onFiredDrillEvent={this.handleFiredDrillEvent}
                 onAfterRender={onAfterRender}
@@ -81,3 +77,5 @@ export default class HeadlineTransformation extends Component {
         );
     }
 }
+
+export default injectIntl(HeadlineTransformation);

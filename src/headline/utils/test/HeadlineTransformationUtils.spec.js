@@ -1,6 +1,6 @@
 // (C) 2007-2018 GoodData Corporation
 import {
-    getData,
+    getHeadlineData,
     applyDrillableItems,
     buildDrillEventData,
     fireDrillEvent
@@ -12,14 +12,25 @@ import {
     SINGLE_METRIC_EXECUTION_RESULT
 } from '../../test/fixtures/one_measure';
 import {
-    THREE_METRICS_EXECUTION_REQUEST
-} from '../../test/fixtures/three_measures';
+    EMPTY_FIRST_MEASURE_VALUE_EXECUTION_RESULT,
+    EMPTY_MEASURE_VALUES_EXECUTION_RESULT,
+    EMPTY_SECOND_MEASURE_VALUE_EXECUTION_RESULT,
+    TWO_MEASURES_EXECUTION_RESPONSE,
+    TWO_MEASURES_EXECUTION_RESULT,
+    TWO_MEASURES_WITH_IDENTIFIER_EXECUTION_REQUEST,
+    TWO_MEASURES_WITH_URI_EXECUTION_REQUEST,
+    ZERO_FIRST_MEASURE_VALUE_EXECUTION_RESULT,
+    ZERO_MEASURE_VALUES_EXECUTION_RESULT,
+    ZERO_SECOND_MEASURE_VALUE_EXECUTION_RESULT
+} from '../../test/fixtures/two_measures';
+import { createIntlMock } from '../../../test/utils';
 
 describe('HeadlineTransformationUtils', () => {
     describe('getData', () => {
-        it('should set primary item data from the execution result', () => {
-            const data = getData(SINGLE_URI_METRIC_EXECUTION_REQUEST, SINGLE_METRIC_EXECUTION_RESPONSE,
-                SINGLE_METRIC_EXECUTION_RESULT);
+        it('should set primary item data from the execution', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(SINGLE_METRIC_EXECUTION_RESPONSE, SINGLE_METRIC_EXECUTION_RESULT, intl);
             expect(data).toEqual({
                 primaryItem: {
                     localIdentifier: 'm1',
@@ -31,17 +42,211 @@ describe('HeadlineTransformationUtils', () => {
             });
         });
 
-        it('should throw error if primary item value is not found in the execution request', () => {
-            expect(() => getData(null, SINGLE_METRIC_EXECUTION_RESPONSE, SINGLE_METRIC_EXECUTION_RESULT)).toThrow();
+        it('should set primary, secondary and tertiary item data from the execution', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(TWO_MEASURES_EXECUTION_RESPONSE, TWO_MEASURES_EXECUTION_RESULT, intl);
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: '42470571.16',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '12345678',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                tertiaryItem: {
+                    localIdentifier: 'tertiaryIdentifier',
+                    value: '2.4401165460495564',
+                    format: '#,##0%',
+                    title: 'Versus',
+                    isDrillable: false
+                }
+            });
         });
 
-        it('should throw error if primary item data is not found in the execution response', () => {
-            expect(() => getData(SINGLE_URI_METRIC_EXECUTION_REQUEST, SINGLE_METRIC_EXECUTION_RESPONSE, null))
-                .toThrow();
+        it('should set null for tertiary value when primary value is null', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(TWO_MEASURES_EXECUTION_RESPONSE,
+                EMPTY_FIRST_MEASURE_VALUE_EXECUTION_RESULT, intl);
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: null,
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '12345678',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                tertiaryItem: {
+                    localIdentifier: 'tertiaryIdentifier',
+                    value: null,
+                    format: '#,##0%',
+                    title: 'Versus',
+                    isDrillable: false
+                }
+            });
         });
 
-        it('should throw error if primary item value is not found in the execution result', () => {
-            expect(() => getData(SINGLE_URI_METRIC_EXECUTION_REQUEST, null, SINGLE_METRIC_EXECUTION_RESULT)).toThrow();
+        it('should set null for tertiary value when secondary value is null', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(TWO_MEASURES_EXECUTION_RESPONSE,
+                EMPTY_SECOND_MEASURE_VALUE_EXECUTION_RESULT, intl);
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: '42470571.16',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: null,
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                tertiaryItem: {
+                    localIdentifier: 'tertiaryIdentifier',
+                    value: null,
+                    format: '#,##0%',
+                    title: 'Versus',
+                    isDrillable: false
+                }
+            });
+        });
+
+        it('should set null for tertiary value when both primary & secondary values are null', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(TWO_MEASURES_EXECUTION_RESPONSE, EMPTY_MEASURE_VALUES_EXECUTION_RESULT, intl);
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: null,
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: null,
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                tertiaryItem: {
+                    localIdentifier: 'tertiaryIdentifier',
+                    value: null,
+                    format: '#,##0%',
+                    title: 'Versus',
+                    isDrillable: false
+                }
+            });
+        });
+
+        it('should set -1 for tertiary value when primary value is 0', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(TWO_MEASURES_EXECUTION_RESPONSE,
+                ZERO_FIRST_MEASURE_VALUE_EXECUTION_RESULT, intl);
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: '0',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '12345678',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                tertiaryItem: {
+                    localIdentifier: 'tertiaryIdentifier',
+                    value: '-1',
+                    format: '#,##0%',
+                    title: 'Versus',
+                    isDrillable: false
+                }
+            });
+        });
+
+        it('should set null for tertiary value when secondary value is 0', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(TWO_MEASURES_EXECUTION_RESPONSE,
+                ZERO_SECOND_MEASURE_VALUE_EXECUTION_RESULT, intl);
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: '42470571.16',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '0',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                tertiaryItem: {
+                    localIdentifier: 'tertiaryIdentifier',
+                    value: null,
+                    format: '#,##0%',
+                    title: 'Versus',
+                    isDrillable: false
+                }
+            });
+        });
+
+        it('should set null for tertiary value when both primary & secondary values are 0', () => {
+            const intl = createIntlMock();
+
+            const data = getHeadlineData(TWO_MEASURES_EXECUTION_RESPONSE, ZERO_MEASURE_VALUES_EXECUTION_RESULT, intl);
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: '0',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '0',
+                    format: '$#,##0.00',
+                    isDrillable: false
+                },
+                tertiaryItem: {
+                    localIdentifier: 'tertiaryIdentifier',
+                    value: null,
+                    format: '#,##0%',
+                    title: 'Versus',
+                    isDrillable: false
+                }
+            });
         });
     });
 
@@ -50,7 +255,7 @@ describe('HeadlineTransformationUtils', () => {
             const data = applyDrillableItems({}, [{
                 identifier: 'some-identifier',
                 uri: 'some-uri'
-            }], THREE_METRICS_EXECUTION_REQUEST);
+            }], TWO_MEASURES_WITH_URI_EXECUTION_REQUEST);
             expect(data).toEqual({});
         });
 
@@ -66,7 +271,7 @@ describe('HeadlineTransformationUtils', () => {
             const updatedData = applyDrillableItems(data, [{
                 identifier: 'some-identifier',
                 uri: 'some-uri'
-            }], THREE_METRICS_EXECUTION_REQUEST);
+            }], TWO_MEASURES_WITH_URI_EXECUTION_REQUEST);
 
             expect(updatedData).toEqual({
                 primaryItem: {
@@ -78,7 +283,7 @@ describe('HeadlineTransformationUtils', () => {
             });
         });
 
-        it('should enable drilling of the item identified by the drillable item uri', () => {
+        it('should enable drilling of the primary item identified by the drillable item uri', () => {
             const data = applyDrillableItems({
                 primaryItem: {
                     localIdentifier: 'm1',
@@ -100,7 +305,7 @@ describe('HeadlineTransformationUtils', () => {
             });
         });
 
-        it('should enable drilling of the item identified by the drillable item identifier', () => {
+        it('should enable drilling of the primary item identified by the drillable item identifier', () => {
             const data = applyDrillableItems({
                 primaryItem: {
                     localIdentifier: 'm1',
@@ -109,7 +314,7 @@ describe('HeadlineTransformationUtils', () => {
                     isDrillable: false
                 }
             }, [{
-                identifier: 'metric.found'
+                identifier: 'metric.lost'
             }], SINGLE_IDENTIFIER_METRIC_EXECUTION_REQUEST);
 
             expect(data).toEqual({
@@ -117,6 +322,87 @@ describe('HeadlineTransformationUtils', () => {
                     localIdentifier: 'm1',
                     title: 'Lost',
                     value: '120',
+                    isDrillable: true
+                }
+            });
+        });
+
+        it('should enable drilling of the secondary item identified by the drillable item uri', () => {
+            const data = applyDrillableItems({
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '220',
+                    isDrillable: false
+                }
+            }, [{
+                uri: '/gdc/md/project_id/obj/2'
+            }], TWO_MEASURES_WITH_URI_EXECUTION_REQUEST);
+
+            expect(data).toEqual({
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '220',
+                    isDrillable: true
+                }
+            });
+        });
+
+        it('should enable drilling of the secondary item identified by the drillable item identifier', () => {
+            const data = applyDrillableItems({
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '220',
+                    isDrillable: false
+                }
+            }, [{
+                identifier: 'measure.found'
+            }], TWO_MEASURES_WITH_IDENTIFIER_EXECUTION_REQUEST);
+
+            expect(data).toEqual({
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '220',
+                    isDrillable: true
+                }
+            });
+        });
+
+        it('should enable drilling of the both items (primary, secondary)', () => {
+            const data = applyDrillableItems({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: '120',
+                    isDrillable: false
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '220',
+                    isDrillable: false
+                }
+            }, [{
+                identifier: 'measure.lost',
+                uri: '/gdc/md/project_id/obj/1'
+            }, {
+                uri: '/gdc/md/project_id/obj/2'
+            }], TWO_MEASURES_WITH_URI_EXECUTION_REQUEST);
+
+            expect(data).toEqual({
+                primaryItem: {
+                    localIdentifier: 'm1',
+                    title: 'Lost',
+                    value: '120',
+                    isDrillable: true
+                },
+                secondaryItem: {
+                    localIdentifier: 'm2',
+                    title: 'Found',
+                    value: '220',
                     isDrillable: true
                 }
             });
@@ -230,6 +516,60 @@ describe('HeadlineTransformationUtils', () => {
                             header: {
                                 identifier: 'metric.lost',
                                 uri: ''
+                            }
+                        }
+                    ]
+                }
+            });
+        });
+
+        it('should build drill event data from execution for secondary value', () => {
+            const itemContext = {
+                localIdentifier: 'm2',
+                element: 'secondaryValue',
+                value: '12345678'
+            };
+            const eventData = buildDrillEventData(
+                itemContext,
+                TWO_MEASURES_WITH_URI_EXECUTION_REQUEST,
+                TWO_MEASURES_EXECUTION_RESPONSE
+            );
+            expect(eventData).toEqual({
+                executionContext: {
+                    measures: [
+                        {
+                            localIdentifier: 'm1',
+                            definition: {
+                                measure: {
+                                    item: {
+                                        uri: '/gdc/md/project_id/obj/1'
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            localIdentifier: 'm2',
+                            definition: {
+                                measure: {
+                                    item: {
+                                        uri: '/gdc/md/project_id/obj/2'
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                drillContext: {
+                    type: 'headline',
+                    element: 'secondaryValue',
+                    value: '12345678',
+                    intersection: [
+                        {
+                            id: 'm2',
+                            title: 'Found',
+                            header: {
+                                identifier: '',
+                                uri: '/gdc/md/project_id/obj/2'
                             }
                         }
                     ]

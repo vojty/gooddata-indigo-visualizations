@@ -62,6 +62,17 @@ export const pieChartWithMetricsOnly = {
     executionResult: require('../test_data/pie_chart_with_metrics_only_result.json').executionResult
 };
 
+export const headlineWithOneMeasure = {
+    executionRequest: require('../test_data/headline_with_one_measure_request.json').execution,
+    executionResponse: require('../test_data/headline_with_one_measure_response.json').executionResponse,
+    executionResult: require('../test_data/headline_with_one_measure_result.json').executionResult
+};
+
+export const headlineWithTwoMeasures = {
+    executionRequest: require('../test_data/headline_with_two_measures_request.json').execution,
+    executionResponse: require('../test_data/headline_with_two_measures_response.json').executionResponse,
+    executionResult: require('../test_data/headline_with_two_measures_result.json').executionResult
+};
 
 export function barChartWithNTimes3MetricsAndViewByAttribute(n = 1) {
     let dataSet = immutableSet(
@@ -151,5 +162,7 @@ export default {
     barChartWithPopMeasureAndViewByAttribute,
     barChartWith6PopMeasuresAndViewByAttribute,
     pieChartWithMetricsOnly,
-    barChartWithNegativeAndZeroValues
+    barChartWithNegativeAndZeroValues,
+    headlineWithOneMeasure,
+    headlineWithTwoMeasures
 };

@@ -39,7 +39,7 @@ function buildCssStyle(color, backgroundColor) {
  */
 export default function formatItemValue(item) {
     const { label, color, backgroundColor } = formatValueToLabelWithColors(item.value, item.format);
-    const isValueEmpty = label === INVALID_VALUE;
+    const isValueEmpty = label === INVALID_VALUE || label === '';
     const value = isValueEmpty
         ? DEFAULT_VALUE_WHEN_EMPTY
         : label;

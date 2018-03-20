@@ -66,6 +66,15 @@ describe('HeadlineDataItemUtils', () => {
             });
         });
 
+        it('should return empty value if null value is provided without [=null] format definition', () => {
+            const result = formatItemValue(buildHeaderDataItem(null, '[color=9c46b5]$#,##0.00'));
+            expect(result).toEqual({
+                value: '–',
+                isValueEmpty: true,
+                cssStyle: {}
+            });
+        });
+
         it('should return empty value if undefined value is provided with format', () => {
             const result = formatItemValue(buildHeaderDataItem(undefined, '[=null]EMPTY'));
             expect(result).toEqual({
@@ -179,6 +188,15 @@ describe('HeadlineDataItemUtils', () => {
                     color: '#9c46b5',
                     backgroundColor: '#d2ccde'
                 }
+            });
+        });
+
+        it('should return rounded formatted percentage value', () => {
+            const result = formatItemValue(buildHeaderDataItem('0.4401165460495564', '#,##0%'));
+            expect(result).toEqual({
+                value: '44%',
+                isValueEmpty: false,
+                cssStyle: {}
             });
         });
     });

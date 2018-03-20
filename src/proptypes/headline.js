@@ -1,10 +1,6 @@
 // (C) 2007-2018 GoodData Corporation
 import PropTypes from 'prop-types';
 
-export const HeadlineConfig = PropTypes.shape({
-    maxFontSize: PropTypes.number
-});
-
 const HeadlineDataItem = PropTypes.shape({
     localIdentifier: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
@@ -14,5 +10,7 @@ const HeadlineDataItem = PropTypes.shape({
 });
 
 export const HeadlineData = PropTypes.shape({
-    primaryItem: HeadlineDataItem.isRequired
+    primaryItem: HeadlineDataItem.isRequired,
+    secondaryItem: HeadlineDataItem,
+    tertiaryItem: HeadlineDataItem
 });

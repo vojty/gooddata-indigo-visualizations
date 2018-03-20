@@ -1,23 +1,9 @@
 // (C) 2007-2018 GoodData Corporation
 import React from 'react';
-import { noop } from 'lodash';
 import { mount } from 'enzyme';
 import Headline from '../Headline';
 
 describe('Headline', () => {
-    let spyConsole;
-
-    beforeAll(() => {
-        // Headline uses 3rd party component Textfit which logs console warning about inability to compute element's
-        // height because the component is not visible. The warning is logged only during the testing. It will not be
-        // encountered in the production when the component is rendered by a real browser.
-        spyConsole = jest.spyOn(console, 'warn').mockImplementation(noop);
-    });
-
-    afterAll(() => {
-        spyConsole.mockRestore();
-    });
-
     function createComponent(props = {}) {
         return mount(<Headline {...props} />);
     }
@@ -50,245 +36,643 @@ describe('Headline', () => {
         expect(onAfterRender).toHaveBeenCalledTimes(2);
     });
 
-    it('should not produce any event upon click when fire handler is set but primary value is not drillable', () => {
-        const onFiredDrillEvent = jest.fn();
-        const wrapper = createComponent({
-            onFiredDrillEvent,
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: '42'
+    describe('with primary value', () => {
+        it('should not produce any event upon click when fire handler but primary value is not drillable', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '42'
+                    }
                 }
-            }
+            });
+
+            const primaryValue = wrapper.find('.s-headline-primary-item .headline-value-wrapper');
+            primaryValue.simulate('click');
+
+            expect(onFiredDrillEvent).toHaveBeenCalledTimes(0);
         });
 
-        const primaryValue = wrapper.find('.s-headline-primary-value');
-        primaryValue.simulate('click');
+        it('should produce correct event upon click when fire handler is set and primary value is drillable', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '42',
+                        isDrillable: true
+                    }
+                }
+            });
 
-        expect(onFiredDrillEvent).toHaveBeenCalledTimes(0);
+            const primaryValue = wrapper.find('.s-headline-primary-item .headline-value-wrapper');
+            primaryValue.simulate('click', { target: 'elementTarget' });
+
+            expect(onFiredDrillEvent).toBeCalledWith({
+                localIdentifier: 'm1',
+                value: '42',
+                element: 'primaryValue'
+            }, 'elementTarget');
+        });
+
+        it('should have primary value written out as link even when the drillable value is invalid', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: null,
+                        isDrillable: true
+                    }
+                }
+            });
+
+            const primaryValueLink = wrapper.find('.s-headline-primary-item .s-headline-item-link');
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+
+            primaryValueLink.simulate('click', { target: 'elementTarget' });
+
+            expect(primaryValueLink.exists()).toBe(true);
+            expect(primaryValueText).toEqual('–');
+
+            expect(onFiredDrillEvent).toHaveBeenCalledTimes(1);
+            expect(onFiredDrillEvent).toBeCalledWith({
+                localIdentifier: 'm1',
+                value: null,
+                element: 'primaryValue'
+            }, 'elementTarget');
+        });
+
+        it('should have primary value written out as dash when empty string is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: ''
+                    }
+                }
+            });
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            expect(primaryValueText).toEqual('–');
+        });
+
+        it('should have primary value written out as dash when null is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: null
+                    }
+                }
+            });
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            expect(primaryValueText).toEqual('–');
+        });
+
+        it('should have primary value written out as specified in format when null value and format is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: null,
+                        format: '[=null]EMPTY'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-primary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(false);
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            expect(primaryValueText).toEqual('EMPTY');
+        });
+
+        it('should have primary value written out as dash when undefined is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: undefined
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-primary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(true);
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            expect(primaryValueText).toEqual('–');
+        });
+
+        it('should have primary value written out as dash when non number string is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: 'xyz'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-primary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(true);
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            expect(primaryValueText).toEqual('–');
+        });
+
+        it('should have primary value written out as it is when positive number string is provided without format', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '1234567890'
+                    }
+                }
+            });
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            expect(primaryValueText).toEqual('1234567890');
+        });
+
+        it('should have primary value written out as it is when negative number string is provided without format', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '-12345678'
+                    }
+                }
+            });
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            expect(primaryValueText).toEqual('-12345678');
+        });
+
+        it('should have style applied on primary value when format is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '1666.105',
+                        format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00'
+                    }
+                }
+            });
+
+            const primaryValueText = wrapper.find('.s-headline-primary-item .s-headline-value').text();
+            const primaryValueStyle = wrapper.find('.s-headline-primary-item').prop('style');
+
+            expect(primaryValueText).toEqual('$1,666.11');
+            expect(primaryValueStyle).toHaveProperty('color', '#9c46b5');
+            expect(primaryValueStyle).toHaveProperty('backgroundColor', '#d2ccde');
+        });
     });
 
-    it('should produce correct event upon click when fire handler is set and primary value is drillable', () => {
-        const onFiredDrillEvent = jest.fn();
-        const wrapper = createComponent({
-            onFiredDrillEvent,
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: '42',
-                    isDrillable: true
+    describe('with secondary value', () => {
+        it('should not produce any event upon click when fire handler but secondary value is not drillable', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Lost',
+                        value: '1234',
+                        format: '$#,##0.00'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '4321',
+                        format: '$#,##0.00'
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '11',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
                 }
-            }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(false);
+
+            const secondaryValue = wrapper.find('.s-headline-secondary-item .s-headline-value');
+            secondaryValue.simulate('click');
+
+            expect(onFiredDrillEvent).toHaveBeenCalledTimes(0);
         });
 
-        const primaryValue = wrapper.find('.s-headline-primary-value');
-        primaryValue.simulate('click', { target: 'elementTarget' });
+        it('should produce correct event upon click when fire handler is set and secondary value is drillable', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Lost',
+                        value: '1234',
+                        format: '$#,##0.00'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '4321',
+                        format: '$#,##0.00',
+                        isDrillable: true
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '11',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
 
-        expect(onFiredDrillEvent).toBeCalledWith({
-            localIdentifier: 'm1',
-            value: '42',
-            element: 'primaryValue'
-        }, 'elementTarget');
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(false);
+
+            const secondaryValue = wrapper.find('.s-headline-secondary-item .s-headline-value');
+            secondaryValue.simulate('click', { target: 'elementTarget' });
+
+            expect(onFiredDrillEvent).toBeCalledWith({
+                localIdentifier: 'm2',
+                value: '4321',
+                element: 'secondaryValue'
+            }, 'elementTarget');
+        });
+
+        it('should have secondary value written out as link even when the drillable value is invalid', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Lost',
+                        value: '1234',
+                        format: '$#,##0.00'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: null,
+                        format: '$#,##0.00',
+                        isDrillable: true
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '11',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(true);
+
+            const secondaryValue = wrapper.find('.s-headline-secondary-item .s-headline-item-link');
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+
+            secondaryValue.simulate('click', { target: 'elementTarget' });
+
+            expect(secondaryValue.exists()).toBe(true);
+            expect(secondaryValueText).toEqual('–');
+
+            expect(onFiredDrillEvent).toHaveBeenCalledTimes(1);
+            expect(onFiredDrillEvent).toBeCalledWith({
+                localIdentifier: 'm2',
+                value: null,
+                element: 'secondaryValue'
+            }, 'elementTarget');
+        });
+
+        it('should have secondary value written out as dash when empty string is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: ''
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '',
+                        format: '$#,##0.00',
+                        isDrillable: true
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '11',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(true);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            expect(secondaryValueText).toEqual('–');
+        });
+
+        it('should have secondary value written out as dash when null is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: null
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '',
+                        format: '$#,##0.00',
+                        isDrillable: true
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '11',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(true);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            expect(secondaryValueText).toEqual('–');
+        });
+
+        it('should have secondary value written out as specified in format when null value and format is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: null,
+                        format: '[=null]EMPTY'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: null,
+                        format: '[=null]EMPTY',
+                        isDrillable: true
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: null,
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(false);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            expect(secondaryValueText).toEqual('EMPTY');
+        });
+
+        it('should have secondary value written out as dash when undefined is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: undefined
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: undefined
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: null,
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(true);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            expect(secondaryValueText).toEqual('–');
+        });
+
+        it('should have secondary value written out as dash when non number string is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: 'xyz'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: 'xyz'
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: null,
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(true);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            expect(secondaryValueText).toEqual('–');
+        });
+
+        it('should have secondary value written out as it is when positive number string is provided without format', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '1234567890'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '1234567890'
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '1.1',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(false);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            expect(secondaryValueText).toEqual('1234567890');
+        });
+
+        it('should have secondary value written out as it is when negative number string is provided without format', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '-12345678'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '-12345678'
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '1.1',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(false);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            expect(secondaryValueText).toEqual('-12345678');
+        });
+
+        it('should have style applied on secondary value when format is provided', () => {
+            const wrapper = createComponent({
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Some metric',
+                        value: '1666.105',
+                        format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '1666.105',
+                        format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00'
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '1.1',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
+                }
+            });
+
+            const emptyValueElement = wrapper.find('.s-headline-secondary-item .s-headline-value--empty');
+            expect(emptyValueElement.exists()).toEqual(false);
+
+            const secondaryValueText = wrapper.find('.s-headline-secondary-item .s-headline-value').text();
+            const secondaryValueStyle = wrapper.find('.s-headline-secondary-item').prop('style');
+
+            expect(secondaryValueText).toEqual('$1,666.11');
+            expect(secondaryValueStyle).toHaveProperty('color', '#9c46b5');
+            expect(secondaryValueStyle).toHaveProperty('backgroundColor', '#d2ccde');
+        });
     });
 
-    it('should have primary value written out as link even when the drillable value is invalid', () => {
-        const onFiredDrillEvent = jest.fn();
-        const wrapper = createComponent({
-            onFiredDrillEvent,
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: null,
-                    isDrillable: true
+    describe('with tertiary value', () => {
+        it('should have written out as formatted value when correct value is provided', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Lost',
+                        value: '1234',
+                        format: '$#,##0.00'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: '4321',
+                        format: '$#,##0.00'
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: '1.1',
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
                 }
-            }
+            });
+
+            const tertiaryValueText = wrapper.find('.s-headline-tertiary-item .s-headline-value-wrapper').text();
+            expect(tertiaryValueText).toEqual('110%');
         });
 
-        const primaryValueLink = wrapper.find('.s-headline-primary-link-clickable');
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        primaryValueLink.simulate('click', { target: 'elementTarget' });
-
-        expect(primaryValueLink.exists()).toBe(true);
-        expect(primaryValueText).toEqual('–');
-
-        expect(onFiredDrillEvent).toHaveBeenCalledTimes(1);
-        expect(onFiredDrillEvent).toBeCalledWith({
-            localIdentifier: 'm1',
-            value: null,
-            element: 'primaryValue'
-        }, 'elementTarget');
-    });
-
-    it('should have primary value written out as dash when empty string is provided', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: ''
+        it('should have written out as dash when undefined value is provided', () => {
+            const onFiredDrillEvent = jest.fn();
+            const wrapper = createComponent({
+                onFiredDrillEvent,
+                data: {
+                    primaryItem: {
+                        localIdentifier: 'm1',
+                        title: 'Lost',
+                        value: '1234',
+                        format: '$#,##0.00'
+                    },
+                    secondaryItem: {
+                        localIdentifier: 'm2',
+                        title: 'Found',
+                        value: null,
+                        format: '$#,##0.00'
+                    },
+                    tertiaryItem: {
+                        localIdentifier: 'tertiaryIdentifier',
+                        value: null,
+                        format: '#,##0%',
+                        title: 'Versus'
+                    }
                 }
-            }
+            });
+
+            const tertiaryValueText = wrapper.find('.s-headline-tertiary-item .s-headline-value-wrapper').text();
+            expect(tertiaryValueText).toEqual('–');
         });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(primaryValueText).toEqual('–');
-    });
-
-    it('should have primary value written out as dash when null is provided', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: null
-                }
-            }
-        });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(primaryValueText).toEqual('–');
-    });
-
-    it('should have primary value written out as specified in format when null value and format is provided', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: null,
-                    format: '[=null]EMPTY'
-                }
-            }
-        });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(primaryValueText).toEqual('EMPTY');
-    });
-
-    it('should have primary value written out as dash when undefined is provided', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: undefined
-                }
-            }
-        });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(primaryValueText).toEqual('–');
-    });
-
-    it('should have primary value written out as dash when non number string is provided', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: 'xyz'
-                }
-            }
-        });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(primaryValueText).toEqual('–');
-    });
-
-    it('should have primary value written out as it is when positive number string is provided without format', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: '1234567890'
-                }
-            }
-        });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(primaryValueText).toEqual('1234567890');
-    });
-
-    it('should have primary value written out as it is when negative number string is provided without format', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: '-12345678'
-                }
-            }
-        });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(primaryValueText).toEqual('-12345678');
-    });
-
-    it('should have style applied on primary value when format is provided', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: '1666.105',
-                    format: '[color=9c46b5][backgroundColor=d2ccde]$#,##0.00'
-                }
-            }
-        });
-
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-        const primaryValueStyle = wrapper.find('.s-headline-primary').prop('style');
-
-        expect(primaryValueText).toEqual('$1,666.11');
-        expect(primaryValueStyle).toHaveProperty('color', '#9c46b5');
-        expect(primaryValueStyle).toHaveProperty('backgroundColor', '#d2ccde');
-    });
-
-    it('should not have "empty" style applied on primary value when value is valid', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: '42'
-                }
-            }
-        });
-
-        const emptyValueElement = wrapper.find('.s-headline-primary-value--empty');
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(emptyValueElement.exists()).toEqual(false);
-        expect(primaryValueText).toEqual('42');
-    });
-
-    it('should have "empty" style applied on primary value when value is invalid', () => {
-        const wrapper = createComponent({
-            data: {
-                primaryItem: {
-                    localIdentifier: 'm1',
-                    title: 'Some metric',
-                    value: 'invalid-value'
-                }
-            }
-        });
-
-        const emptyValueElement = wrapper.find('.s-headline-primary-value--empty');
-        const primaryValueText = wrapper.find('.s-headline-primary-value').text();
-
-        expect(emptyValueElement.exists()).toEqual(true);
-        expect(primaryValueText).toEqual('–');
     });
 });

@@ -19,5 +19,6 @@ export default {
     'visualizations.totals.row.title.min': 'Min',
     'visualizations.totals.row.title.max': 'Max',
     'visualizations.totals.row.title.nat': 'Total',
-    'visualizations.totals.row.title.med': 'Median'
+    'visualizations.totals.row.title.med': 'Median',
+    'visualizations.headline.tertiary.title': 'Versus'
 };
