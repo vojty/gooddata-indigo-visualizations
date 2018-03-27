@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { noop } from 'lodash';
-import ResponsiveText from './ResponsiveText';
+import ResponsiveText from '@gooddata/goodstrap/lib/ResponsiveText/ResponsiveText';
 import { HeadlineData } from '../proptypes/headline';
 import formatItemValue from './utils/HeadlineDataItemUtils';
 
