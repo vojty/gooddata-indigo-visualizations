@@ -21,7 +21,8 @@ export default class ChartTransformation extends Component {
             legend: PropTypes.shape({
                 enabled: PropTypes.bool
             }),
-            colors: PropTypes.arrayOf(PropTypes.string)
+            colors: PropTypes.arrayOf(PropTypes.string),
+            stacking: PropTypes.bool
         }).isRequired,
         limits: PropTypes.shape({
             series: PropTypes.number,

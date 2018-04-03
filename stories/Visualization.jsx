@@ -35,7 +35,8 @@ class DynamicVisualization extends React.Component {
             'column',
             'bar',
             'line',
-            'pie'
+            'pie',
+            'area'
         ];
 
         this.state = {
@@ -206,6 +207,97 @@ storiesOf('Visualization', module)
                     {...dataSet}
                     config={{
                         type: 'pie'
+                    }}
+                    onDataTooLarge={f => f}
+                />
+            )
+        );
+    })
+    .add('visualization stacked area chart', () => {
+        const dataSet = fixtures.areaChartWith3MetricsAndViewByAttribute;
+
+        return screenshotWrap(
+            wrap(
+                <Visualization
+                    {...dataSet}
+                    config={{
+                        type: 'area',
+                        legend: {
+                            position: 'right'
+                        }
+                    }}
+                    onDataTooLarge={f => f}
+                />
+            )
+        );
+    })
+    .add('visualization area chart with disabled stacking', () => {
+        const dataSet = fixtures.areaChartWith3MetricsAndViewByAttribute;
+
+        return screenshotWrap(
+            wrap(
+                <Visualization
+                    {...dataSet}
+                    config={{
+                        type: 'area',
+                        stacking: false,
+                        legend: {
+                            position: 'top'
+                        }
+                    }}
+                    onDataTooLarge={f => f}
+                />
+            )
+        );
+    })
+
+    .add('visualization stacked area chart with single measure and no attributes', () => {
+        const dataSet = fixtures.barChartWithSingleMeasureAndNoAttributes;
+        return screenshotWrap(
+            wrap(
+                <Visualization
+                    {...dataSet}
+                    config={{
+                        type: 'area',
+                        legend: {
+                            position: 'top'
+                        }
+                    }}
+                    onDataTooLarge={f => f}
+                />
+            )
+        );
+    })
+
+    .add('visualization stacked area chart with negative values', () => {
+        const dataSet = fixtures.areaChartWithNegativeValues;
+        return screenshotWrap(
+            wrap(
+                <Visualization
+                    {...dataSet}
+                    config={{
+                        type: 'area',
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }}
+                    onDataTooLarge={f => f}
+                />
+            )
+        );
+    })
+
+    .add('visualization stacked area chart with single metric and stack by attribute', () => {
+        const dataSet = fixtures.areaChartWith1MetricsAndStackByAttributeAndFilters;
+        return screenshotWrap(
+            wrap(
+                <Visualization
+                    {...dataSet}
+                    config={{
+                        type: 'area',
+                        legend: {
+                            position: 'bottom'
+                        }
                     }}
                     onDataTooLarge={f => f}
                 />

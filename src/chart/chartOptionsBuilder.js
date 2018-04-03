@@ -2,15 +2,28 @@
 import { colors2Object, numberFormat } from '@gooddata/numberjs';
 import invariant from 'invariant';
 
-import { range, get, without, escape, unescape } from 'lodash';
-import { parseValue, getAttributeElementIdFromAttributeElementUri } from '../utils/common';
+import { range, get, without, escape, unescape, isUndefined } from 'lodash';
+
+import {
+    parseValue,
+    getAttributeElementIdFromAttributeElementUri,
+    isLineChart,
+    isAreaChart,
+    isPieChart,
+    isChartSupported,
+    stringifyChartTypes
+} from '../utils/common';
+
 import { getMeasureUriOrIdentifier, isDrillable } from '../utils/drilldownEventing';
 import { DEFAULT_COLOR_PALETTE, getLighterColor } from '../utils/color';
-import { PIE_CHART, CHART_TYPES } from '../VisualizationTypes';
 import { isDataOfReasonableSize } from './highChartsCreators';
 import { VIEW_BY_DIMENSION_INDEX, STACK_BY_DIMENSION_INDEX, PIE_CHART_LIMIT } from './constants';
 
 import { DEFAULT_CATEGORIES_LIMIT } from './highcharts/commonConfiguration';
+
+const enableAreaChartStacking = (stacking) => {
+    return stacking || isUndefined(stacking);
+};
 
 export function unwrap(wrappedObject) {
     return wrappedObject[Object.keys(wrappedObject)[0]];
@@ -28,14 +41,16 @@ export function validateData(limits = {}, chartOptions) {
         series: 1, // pie charts can have just one series
         categories: Math.min(limits.categories || DEFAULT_CATEGORIES_LIMIT, PIE_CHART_LIMIT)
     };
-    const isPieChart = chartOptions.type === PIE_CHART;
+
+    const { type } = chartOptions;
+
     return {
         // series and categories limit
-        dataTooLarge: !isDataOfReasonableSize(chartOptions.data, isPieChart
+        dataTooLarge: !isDataOfReasonableSize(chartOptions.data, isPieChart(type)
             ? pieChartLimits
             : limits),
         // check pie chart for negative values
-        hasNegativeValue: isPieChart && isNegativeValueIncluded(chartOptions.data.series)
+        hasNegativeValue: isPieChart(type) && isNegativeValueIncluded(chartOptions.data.series)
     };
 }
 
@@ -62,7 +77,7 @@ export function getColorPalette(
     type
 ) {
     let updatedColorPalette = [];
-    const isAttributePieChart = type === PIE_CHART && afm.attributes && afm.attributes.length > 0;
+    const isAttributePieChart = isPieChart(type) && afm.attributes && afm.attributes.length > 0;
 
     if (stackByAttribute || isAttributePieChart) {
         const itemsCount = stackByAttribute ? stackByAttribute.items.length : viewByAttribute.items.length;
@@ -120,7 +135,7 @@ export function getSeriesItemData(
             viewByIndex = pointIndex;
             // stack bar chart has always just one measure
             measureIndex = 0;
-        } else if (type === PIE_CHART && !viewByAttribute) {
+        } else if (isPieChart(type) && !viewByAttribute) {
             measureIndex = pointIndex;
         }
 
@@ -134,13 +149,13 @@ export function getSeriesItemData(
         if (stackByAttribute) {
             // if there is a stackBy attribute, then seriesIndex corresponds to stackBy label index
             pointData.name = unwrap(stackByAttribute.items[seriesIndex]).name;
-        } else if (type === PIE_CHART && viewByAttribute) {
+        } else if (isPieChart(type) && viewByAttribute) {
             pointData.name = unwrap(viewByAttribute.items[viewByIndex]).name;
         } else {
             pointData.name = unwrap(measureGroup.items[measureIndex]).name;
         }
 
-        if (type === PIE_CHART) {
+        if (isPieChart(type)) {
             // add color to pie chart points from colorPalette
             pointData.color = colorPalette[pointIndex];
             // Pie charts use pointData viewByIndex as legendIndex if available instead of seriesItem legendIndex
@@ -179,7 +194,7 @@ export function getSeries(
             // if stackBy attribute is available, seriesName is a stackBy attribute value of index seriesIndex
             // this is a limitiation of highcharts and a reason why you can not have multi-measure stacked charts
             seriesItemConfig.name = stackByAttribute.items[seriesIndex].attributeHeaderItem.name;
-        } else if (type === PIE_CHART && !viewByAttribute) {
+        } else if (isPieChart(type) && !viewByAttribute) {
             // Pie charts with measures only have a single series which name would is ambiguous
             seriesItemConfig.name = measureGroup.items.map((wrappedMeasure) => {
                 return unwrap(wrappedMeasure).name;
@@ -208,7 +223,7 @@ export function generateTooltipFn(viewByAttribute, type) {
             // For some reason, highcharts ommit categories for pie charts with attribute. Use point.name instead.
             // use attribute name instead of attribute display form name
             textData.unshift([customEscape(viewByAttribute.formOf.name), customEscape(point.category || point.name)]);
-        } else if (type === PIE_CHART) {
+        } else if (isPieChart(type)) {
             // Pie charts with measure only have to use point.name instead of series.name to get the measure name
             textData[0][0] = customEscape(point.name);
         }
@@ -299,7 +314,7 @@ export function getDrillableSeries(
     type,
     afm
 ) {
-    const isMetricPieChart = type === PIE_CHART && !viewByAttribute;
+    const isMetricPieChart = isPieChart(type) && !viewByAttribute;
 
     return series.map((seriesItem, seriesIndex) => {
         let isSeriesDrillable = false;
@@ -369,12 +384,33 @@ function getCategories(type, viewByAttribute, measureGroup) {
     if (viewByAttribute) {
         return viewByAttribute.items.map(({ attributeHeaderItem }) => attributeHeaderItem.name);
     }
-    if (type === PIE_CHART) {
+    if (isPieChart(type)) {
         // Pie chart with measures only (no viewByAttribute) needs to list
         return measureGroup.items.map(wrappedMeasure => unwrap(wrappedMeasure).name);
         // Pie chart categories are later sorted by seriesItem pointValue
     }
     return [];
+}
+
+function getStackingConfig(stackByAttribute, options) {
+    const stackingValue = 'normal';
+    const { type, stacking } = options;
+
+    const isNotLineOrAreaChart = !(isLineChart(type) || isAreaChart(type));
+
+    /**
+     * we should enable stacking for one of the following cases :
+     * 1) If stackby attibute have been set and chart is not line/area chart
+     * 2) If chart is an area chart and stacking is enabled (stackBy attribute doesn't matter)
+     */
+    const isStackByChart = stackByAttribute && isNotLineOrAreaChart;
+    const isAreaChartWithEnabledStacking = isAreaChart(type) && enableAreaChartStacking(stacking);
+    if (isStackByChart || isAreaChartWithEnabledStacking) {
+        return stackingValue;
+    }
+
+    // No stacking
+    return null;
 }
 
 /**
@@ -404,7 +440,7 @@ export function getChartOptions(
         return dimension.filter(attributeHeaders => attributeHeaders[0].attributeHeaderItem);
     });
 
-    invariant(config && CHART_TYPES.includes(config.type), `config.type must be defined and match one of supported chart types: ${CHART_TYPES.join(', ')}`);
+    invariant(config && isChartSupported(config.type), `config.type must be defined and match one of supported chart types: ${stringifyChartTypes()}`);
 
     const { type } = config;
     const measureGroup = findMeasureGroupInDimensions(dimensions);
@@ -442,9 +478,10 @@ export function getChartOptions(
     );
 
     let categories = getCategories(type, viewByAttribute, measureGroup);
+    const stacking = getStackingConfig(stackByAttribute, config);
 
     // Pie charts dataPoints are sorted by default by value in descending order
-    if (type === PIE_CHART) {
+    if (isPieChart(type)) {
         const dataPoints = series[0].data;
         const indexSortOrder = [];
         const sortedDataPoints = dataPoints.sort((pointDataA, pointDataB) => {
@@ -474,7 +511,8 @@ export function getChartOptions(
 
     return {
         type,
-        stacking: (stackByAttribute && type !== 'line') ? 'normal' : null,
+        stacking,
+        hasStackByAttribute: Boolean(stackByAttribute),
         legendLayout: config.legendLayout || 'horizontal',
         colorPalette,
         title: {

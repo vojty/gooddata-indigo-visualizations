@@ -1,6 +1,6 @@
 // (C) 2007-2018 GoodData Corporation
 import { getHighchartsOptions } from '../highChartsCreators';
-import { BAR_CHART, COLUMN_CHART, LINE_CHART, PIE_CHART } from '../../VisualizationTypes';
+import { BAR_CHART, COLUMN_CHART, LINE_CHART, PIE_CHART, AREA_CHART } from '../../VisualizationTypes';
 
 const chartOptions = {
     colorPalette: [
@@ -61,6 +61,24 @@ const pieChartOptions = {
 describe('highChartCreators', () => {
     describe('Line chart configuration', () => {
         const config = getHighchartsOptions({ ...chartOptions, type: LINE_CHART }, {});
+
+        it('contains styles for drillable', () => {
+            expect(config).toHaveProperty('series.0.states.hover.halo.size', 0);
+
+            expect(config).not.toHaveProperty('series.0.marker.states.hover.fillColor');
+            expect(config).not.toHaveProperty('series.0.cursor');
+        });
+
+        it('contains styles for non-drillable', () => {
+            expect(config).not.toHaveProperty('series.1.states.hover.halo.size');
+
+            expect(config).toHaveProperty('series.1.marker.states.hover.fillColor', 'rgb(26,199,152)');
+            expect(config).toHaveProperty('series.1.cursor', 'pointer');
+        });
+    });
+
+    describe('Area chart configuration', () => {
+        const config = getHighchartsOptions({ ...chartOptions, type: AREA_CHART }, {});
 
         it('contains styles for drillable', () => {
             expect(config).toHaveProperty('series.0.states.hover.halo.size', 0);

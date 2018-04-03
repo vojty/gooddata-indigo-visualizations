@@ -26,6 +26,30 @@ export const barChartWith3MetricsAndViewByAttribute = {
     executionResult: require('../test_data/bar_chart_with_3_metrics_and_view_by_attribute_result.json').executionResult
 };
 
+export const areaChartWith3MetricsAndViewByAttribute = {
+    executionRequest: require('../test_data/area_chart_with_3_metrics_and_view_by_attribute_request.json').execution,
+    executionResponse: require('../test_data/area_chart_with_3_metrics_and_view_by_attribute_response.json').executionResponse,
+    executionResult: require('../test_data/area_chart_with_3_metrics_and_view_by_attribute_result.json').executionResult
+};
+
+export const areaChartWith1MetricsAndStackByAttributeAndFilters = {
+    executionRequest: require('../test_data/area_chart_with_single_metric_and_stack_by_attribute_and_filters_request.json').execution,
+    executionResponse: require('../test_data/area_chart_with_single_metric_and_stack_by_attribute_and_filters_response.json').executionResponse,
+    executionResult: require('../test_data/area_chart_with_single_metric_and_stack_by_attribute_and_filters_result.json').executionResult
+};
+
+export const areaChartWithNegativeValues = {
+    executionRequest: require('../test_data/area_chart_with_negative_values_request.json').execution,
+    executionResponse: require('../test_data/area_chart_with_negative_values_response.json').executionResponse,
+    executionResult: require('../test_data/area_chart_with_negative_values_result.json').executionResult
+};
+
+export const areaChartWithMeasureViewByAndStackBy = {
+    executionRequest: require('../test_data/area_chart_with_measure_view_by_and_stack_by_request.json').execution,
+    executionResponse: require('../test_data/area_chart_with_measure_view_by_and_stack_by_response.json').executionResponse,
+    executionResult: require('../test_data/area_chart_with_measure_view_by_and_stack_by_result.json').executionResult
+};
+
 export const barChartWithViewByAttribute = {
     executionRequest: require('../test_data/bar_chart_with_view_by_attribute_request.json').execution,
     executionResponse: require('../test_data/bar_chart_with_view_by_attribute_response.json').executionResponse,
@@ -154,6 +178,10 @@ export default {
     barChartWithSingleMeasureAndNoAttributes,
     barChartWithoutAttributes,
     barChartWith3MetricsAndViewByAttribute,
+    areaChartWith3MetricsAndViewByAttribute,
+    areaChartWithNegativeValues,
+    areaChartWith1MetricsAndStackByAttributeAndFilters,
+    areaChartWithMeasureViewByAndStackBy,
     barChartWith18MetricsAndViewByAttribute,
     barChartWith60MetricsAndViewByAttribute,
     barChartWithViewByAttribute,

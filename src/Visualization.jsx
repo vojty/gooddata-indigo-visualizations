@@ -7,7 +7,12 @@ import Highcharts from 'highcharts';
 
 import ChartTransformation from './chart/ChartTransformation';
 import TableTransformation from './table/TableTransformation';
-import * as VisualizationTypes from './VisualizationTypes';
+
+import {
+    isTable,
+    isChartSupported,
+    stringifyChartTypes
+} from './utils/common';
 
 export default class Visualization extends Component {
     static propTypes = {
@@ -53,20 +58,19 @@ export default class Visualization extends Component {
 
     render() {
         const visType = this.props.config.type;
-        const visualizationTypeList = Object.values(VisualizationTypes);
 
-        if (visType === VisualizationTypes.TABLE) {
+        if (isTable(visType)) {
             return (
                 <TableTransformation {...this.props} />
             );
         }
 
-        if (visualizationTypeList.includes(visType)) {
+        if (isChartSupported(visType)) {
             return (
                 <ChartTransformation {...this.props} />
             );
         }
 
-        return invariant(visualizationTypeList.includes(visType), `Unknown visualization type: ${visType}. Supported visualization types: ${visualizationTypeList.join(', ')}`);
+        return invariant(isChartSupported(visType), `Unknown visualization type: ${visType}. Supported visualization types: ${stringifyChartTypes()}`);
     }
 }

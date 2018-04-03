@@ -252,6 +252,90 @@ storiesOf('Drilldown', module)
             )
         );
     })
+    .add('Area chart drillable by measure', () => {
+        const dataSet = fixtures.barChartWithStackByAndViewByAttributes;
+        return screenshotWrap(
+            wrap(
+                <Visualization
+                    config={{
+                        type: 'area',
+                        legend: {
+                            enabled: false
+                        }
+                    }}
+                    onDataTooLarge={f => f}
+                    drillableItems={[
+                        {
+                            uri: dataSet.executionRequest.afm.measures[0].definition.measure.item.uri
+                        }
+                    ]}
+                    {...dataSet}
+                />,
+                500,
+                '100%'
+            )
+        );
+    })
+    .add('Area chart with onFiredDrillEvent', () => {
+        const dataSet = fixtures.barChartWithStackByAndViewByAttributes;
+        return screenshotWrap(
+            <div>
+                <p>Area chart with standard onFiredDrillEvent callback</p>
+                {
+                    wrap(
+                        <Visualization
+                            onFiredDrillEvent={action('onFiredDrillEvent')}
+                            config={{
+                                type: 'area',
+                                legend: {
+                                    enabled: false
+                                }
+                            }}
+                            onDataTooLarge={f => f}
+                            drillableItems={[
+                                {
+                                    uri: dataSet.executionRequest.afm.measures[0].definition.measure.item.uri
+                                }
+                            ]}
+                            {...dataSet}
+                        />,
+                        500,
+                        '100%'
+                    )
+                }
+                <p>
+                    Area chart with onFiredDrillEvent where drillEvent
+                    is logged into console and default event is prevented
+                </p>
+                {
+                    wrap(
+                        <Visualization
+                            onFiredDrillEvent={({ executionContext, drillContext }) => {
+                                // eslint-disable-next-line no-console
+                                console.log('onFiredDrillEvent', { executionContext, drillContext });
+                                return false;
+                            }}
+                            config={{
+                                type: 'area',
+                                legend: {
+                                    enabled: false
+                                }
+                            }}
+                            onDataTooLarge={f => f}
+                            drillableItems={[
+                                {
+                                    uri: dataSet.executionRequest.afm.measures[0].definition.measure.item.uri
+                                }
+                            ]}
+                            {...dataSet}
+                        />,
+                        500,
+                        '100%'
+                    )
+                }
+            </div>
+        );
+    })
     .add('Table', () => (
         screenshotWrap(
             wrap(
